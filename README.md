@@ -3,7 +3,7 @@
 Product fields library for WooCommerce developers.
 
 ✔️  Custom fields integrated with WooCommerce fields\
-✔️  Easily extendable with hooks\
+✔️  Easily extendable with hooks
 
 <br/>
 
