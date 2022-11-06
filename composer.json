@@ -1,8 +1,8 @@
 {
-    "name": "joanrodas/plubo-routes",
+    "name": "joanrodas/custom-product-fields",
     "description": "WordPress routes made simple.",
     "keywords": ["plugin", "wordpress", "routes", "wp", "routing"],
-    "homepage": "https://github.com/joanrodas/plubo-routes",
+    "homepage": "https://github.com/joanrodas/custom-product-fields",
     "license": "GPL-3.0+",
     "authors": [
       {
