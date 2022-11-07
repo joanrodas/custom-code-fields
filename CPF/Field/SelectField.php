@@ -44,9 +44,9 @@ class SelectField
 	public function set_options($options)
 	{
 		if (is_callable($options)) {
-			$options = (array) call_user_func($options);
+			$options = call_user_func($options);
 		}
-		$this->options = $options;
+		$this->options = (array) $options;
 		return $this;
 	}
 
