@@ -24,7 +24,7 @@ add_action('after_setup_theme', function () {
 });
 
 add_action('cpf_register_fields', function () {
-	CPF\Section\Section::create('test', 'PROVA', [
+	CPF\Section\Section::create('section_slug', 'SECTION name', [
 		CPF\Field\Field::create('text', 'text_field', 'Text Field'),
 		CPF\Field\Field::create('textarea', 'textarea_field', 'Textarea Field'),
 		CPF\Field\Field::create('switch', 'switch_field', 'Switch Field'),
@@ -33,6 +33,7 @@ add_action('cpf_register_fields', function () {
 		CPF\Field\Field::create('color', 'color_field', 'Color Field'),
 		CPF\Field\Field::create('select', 'select_field', 'Select Field')->set_options('add_select_options'),
 		CPF\Field\Field::create('rich_text', 'rich_text_field', 'Rich Text Field'),
+		CPF\Tabs\Tabs::create('tabs', 'tabs_element', 'add_tabs'),
 	])
 		->if_tab('general')
 		// ->if_product_type(['simple', 'variable'])
@@ -46,5 +47,30 @@ function add_select_options() {
 		'option_2' => 'Option 2',
 		'option_3' => 'Option 3',
 		'option_4' => 'Option 4'
+	];
+}
+
+function add_tabs() {
+	return [
+		CPF\Tabs\Tab::create('tab_1', 'Tab 1', [
+			CPF\Field\Field::create('text', 'tab_1_text_field', 'Text Field 1'),
+			CPF\Field\Field::create('textarea', 'tab_1_textarea_field', 'Textarea Field 1'),
+			CPF\Field\Field::create('switch', 'tab_1_switch_field', 'Switch Field 1'),
+			CPF\Field\Field::create('checkbox', 'tab_1_checkbox_field', 'Checkbox Field 1'),
+			CPF\Field\Field::create('number', 'tab_1_number_field', 'Number Field 1')->min(3)->max(23.5)->step(0.1),
+			CPF\Field\Field::create('color', 'tab_1_color_field', 'Color Field 1'),
+			CPF\Field\Field::create('select', 'tab_1_select_field', 'Select Field 1')->set_options('add_select_options'),
+			CPF\Field\Field::create('rich_text', 'tab_1_rich_text_field', 'Rich Text Field 1'),
+		]),
+		CPF\Tabs\Tab::create('tab_2', 'Tab 2', [
+			CPF\Field\Field::create('text', 'tab_2_text_field', 'Text Field 2'),
+			CPF\Field\Field::create('textarea', 'tab_2_textarea_field', 'Textarea Field 2'),
+			CPF\Field\Field::create('switch', 'tab_2_switch_field', 'Switch Field 2'),
+			CPF\Field\Field::create('checkbox', 'tab_2_checkbox_field', 'Checkbox Field 2'),
+			CPF\Field\Field::create('number', 'tab_2_number_field', 'Number Field 2')->min(3)->max(23.5)->step(0.1),
+			CPF\Field\Field::create('color', 'tab_2_color_field', 'Color Field 2'),
+			CPF\Field\Field::create('select', 'tab_2_select_field', 'Select Field 2')->set_options('add_select_options'),
+			CPF\Field\Field::create('rich_text', 'tab_2_rich_text_field', 'Rich Text Field 2'),
+		])
 	];
 }
