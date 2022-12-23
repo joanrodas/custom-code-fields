@@ -6,11 +6,12 @@ class RichTextField
 {
     private $rows = 4;
 
-    public function __construct(string $type, string $slug, string $name)
+    public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
     {
         $this->type = $type;
         $this->slug = $slug;
         $this->name = $name;
+        $this->save_individual = $save_individual;
         add_action('woocommerce_process_product_meta', [$this, 'save']);
     }
 
@@ -31,11 +32,11 @@ class RichTextField
                 <?php
                 $args = array(
                     'media_buttons' => true, // This setting removes the media button.
-                    'textarea_name' => "_" . $this->slug, // Set custom name.
+                    'textarea_name' => "_" . ($this->save_individual ? $this->slug : $this->slug . "[]"), // Set custom name.
                     'textarea_rows' => $this->rows, //Determine the number of rows.
                     'quicktags' => false, // Remove view as HTML button.
                 );
-                wp_editor($value, "_" . $this->slug, $args); ?>
+                wp_editor($value, "_" . $this->slug, $args); // TODO: NO FUNCIONA AL COMPLEX; JA QUE NO ES POT AFEGIR ALPINE ?>
             </div>
             <?php $input = ob_get_clean();
         }
@@ -50,6 +51,8 @@ class RichTextField
 
     public function save($product_id)
     {
+        if (!$this->save_individual) return;
+        
         $key = '_' . $this->slug;
         if (isset($_POST[$key])) { // phpcs:ignore
             update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore

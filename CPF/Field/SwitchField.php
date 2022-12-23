@@ -5,11 +5,12 @@ namespace CPF\Field;
 class SwitchField
 {
 
-	public function __construct(string $type, string $slug, string $name)
+	public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
 	{
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
+		$this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
 
@@ -94,7 +95,7 @@ class SwitchField
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
 				<span>
 					<label class="switch">
-						<input type="checkbox" <?= $checked ? 'checked' : '' ?> name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="1">
+						<input type="checkbox" x-cloak :checked="(typeof entries !== 'undefined' && tab < entries.length) ? entries[tab]['<?= $this->slug ?>'] : <?= $checked ?>" name="_<?= $this->save_individual ? $this->slug : $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
 						<span class="slider round"></span>
 					</label>
 				</span>
@@ -106,6 +107,8 @@ class SwitchField
 
 	public function save($product_id)
 	{
+		if (!$this->save_individual) return;
+		
 		$key = '_' . $this->slug;
 		if (isset($_POST[$key])) { // phpcs:ignore
 			update_post_meta($product_id, $key, '1'); // phpcs:ignore

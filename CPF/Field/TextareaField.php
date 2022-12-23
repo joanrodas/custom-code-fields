@@ -6,12 +6,13 @@ class TextareaField
 {
     private $height;
 
-	public function __construct(string $type, string $slug, string $name)
+	public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
 	{
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
-        add_action('woocommerce_process_product_meta', [$this, 'save']);
+        $this->save_individual = $save_individual;
+		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
 
 
@@ -28,7 +29,7 @@ class TextareaField
 			ob_start(); ?>
             <p class="form-field _<?= $this->type ?>_field ">
 		        <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-                <textarea class="short" style="<?= $this->height ? 'height:'.$this->height.';' : 'height:10rem;' ?>" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" placeholder="" rows="4" cols="20"><?= $value ?></textarea>
+                <textarea class="short" style="<?= $this->height ? 'height:'.$this->height.';' : 'height:10rem;' ?>" name="_<?= $this->save_individual ? $this->slug : $this->slug . '[]' ?>" id="_<?= $this->slug ?>" placeholder="" rows="4" cols="20" x-cloak x-text="(typeof entries !== 'undefined' && tab < entries.length) ? entries[tab]['<?= $this->slug ?>'] : '<?= $value ?>'"></textarea>
             </p>
 			<?php $input = ob_get_clean();
 		}
@@ -43,6 +44,8 @@ class TextareaField
 
     public function save($product_id)
 	{
+		if (!$this->save_individual) return;
+		
 		$key = '_' . $this->slug;
 		if (isset($_POST[$key])) { // phpcs:ignore
 			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore

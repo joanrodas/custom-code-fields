@@ -28,7 +28,16 @@ class Section
     {
         $this->tab = $tab;
         remove_action( 'woocommerce_product_options_general_product_data', array($this, 'display_default'));
-        add_action( "woocommerce_product_options_${tab}_product_data", array($this, 'display'));
+        if (!in_array($tab, ['general', 'inventory', 'related', 'attributes', 'advanced'])) {
+            add_action( 'woocommerce_product_data_panels', function() {
+                echo "<div id='$this->tab' class='panel woocommerce_options_panel hidden'>";
+                $this->display();
+                echo '</div>';
+            } );
+        }
+        else {
+            add_action( "woocommerce_product_options_${tab}_product_data", array($this, 'display'));
+        }
         return $this;
     }
 

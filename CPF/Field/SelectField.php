@@ -7,12 +7,13 @@ class SelectField
 
 	private $options = [];
 
-	public function __construct(string $type, string $slug, string $name)
+	public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
 	{
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
 		$this->options = apply_filters('cpf_select_' . $slug . '_options', []);
+		$this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
 
@@ -30,9 +31,9 @@ class SelectField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<select class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>">
+				<select class="short" style="" name="_<?= $this->save_individual ? $this->slug : $this->slug . '[]' ?>" id="_<?= $this->slug ?>">
 					<?php foreach ($this->options as $option_key => $option_value) : ?>
-						<option value="<?= $option_key ?>" <?= $option_key == $value ? 'selected' : '' ?>><?= $option_value ?></option>
+						<option value="<?= $option_key ?>" x-cloak :selected="(typeof entries !== 'undefined' && tab < entries.length) ? (entries[tab]['<?= $this->slug ?>'] === <?= $option_key ?>) : <?= $option_key == $value ? 'true' : 'false' ?>"><?= $option_value ?></option>
 					<?php endforeach; ?>
 				</select>
 			</p>
@@ -61,6 +62,8 @@ class SelectField
 
 	public function save($product_id)
 	{
+		if (!$this->save_individual) return;
+		
 		$key = '_' . $this->slug;
 		if (isset($_POST[$key])) { // phpcs:ignore
 			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
