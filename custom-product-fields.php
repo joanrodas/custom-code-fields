@@ -25,15 +25,4 @@ add_action('after_setup_theme', function () {
 
 add_action('cpf_register_fields', function () {
 
-	CPF\Section\Section::create('milestones_section', 'Milestones', [
-		CPF\Field\RepeatableField::create('milestone-complex', 'Milestones', [
-			CPF\Field\Field::create('text', 'step_name', 'Step Name'),
-			CPF\Field\Field::create('textarea', 'step_description', 'Step Description'),
-			CPF\Field\Field::create('checkbox', 'completed_step', 'Completed')
-		]),
-		CPF\Field\Field::create('color', 'milestone_color', 'Milestone Color')
-		
-	])
-		->if_tab('milestones')
-		;
 });

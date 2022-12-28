@@ -26,12 +26,25 @@ class ColorField
 		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
 		if ($this->type == 'color') {
 			ob_start(); ?>
-			<p x-cloak class="form-field _<?= $this->type ?>_field ">
+			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input type="color" class="short" style="" name="_<?= $this->save_individual ? $this->slug : $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="(typeof entries !== 'undefined' && tab < entries.length) ? entries[tab]['<?= $this->slug ?>'] : '<?= $value ?>'" placeholder="">
+				<input type="color" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
 			</p>
 			<?php $input = ob_get_clean();
 		}
+		echo $input;
+	}
+
+	public function display_complex() {
+		$input = '';
+		if ($this->type == 'color') {
+			ob_start(); ?>
+			<p x-cloak class="form-field _<?= $this->type ?>_field ">
+				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+				<input x-cloak type="color" class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab]['<?= $this->slug ?>']" placeholder=""> 
+			</p>
+			<?php $input = ob_get_clean();
+		}		
 		echo $input;
 	}
 

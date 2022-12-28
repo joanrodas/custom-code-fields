@@ -29,8 +29,21 @@ class TextareaField
 			ob_start(); ?>
             <p class="form-field _<?= $this->type ?>_field ">
 		        <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-                <textarea class="short" style="<?= $this->height ? 'height:'.$this->height.';' : 'height:10rem;' ?>" name="_<?= $this->save_individual ? $this->slug : $this->slug . '[]' ?>" id="_<?= $this->slug ?>" placeholder="" rows="4" cols="20" x-cloak x-text="(typeof entries !== 'undefined' && tab < entries.length) ? entries[tab]['<?= $this->slug ?>'] : '<?= $value ?>'"></textarea>
+                <textarea class="short" style="<?= $this->height ? 'height:'.$this->height.';' : 'height:10rem;' ?>" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" placeholder="" rows="4" cols="20"><?= $value ?></textarea>
             </p>
+			<?php $input = ob_get_clean();
+		}
+		echo $input;
+	}
+
+	public function display_complex() {
+		$input = '';
+		if ($this->type == 'textarea') {
+			ob_start(); ?>
+			<p class="form-field _<?= $this->type ?>_field ">
+				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+				<textarea x-cloak class="short" style="<?= $this->height ? 'height:' . $this->height . ';' : 'height: 10rem;' ?>" name="_<?= $this->slug . '[]' ?>" id="<?= $this->slug ?>" placeholder rows="4" cols="20" x-text="entries[tab]['<?= $this->slug ?>']"></textarea>
+			</p>
 			<?php $input = ob_get_clean();
 		}
 		echo $input;

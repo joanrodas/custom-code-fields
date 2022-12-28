@@ -28,7 +28,20 @@ class TextField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input type="text" class="short" style="" name="_<?= $this->save_individual ? $this->slug : $this->slug . '[]' ?>" id="_<?= $this->slug ?>" x-cloak :value="(typeof entries !== 'undefined' && tab < entries.length) ? entries[tab]['<?= $this->slug ?>'] : '<?= $value ?>'" placeholder="">
+				<input type="text" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
+			</p>
+			<?php $input = ob_get_clean();
+		}
+		echo $input;
+	}
+
+	public function display_complex() {
+		$input = '';
+		if ($this->type == 'text') {
+			ob_start(); ?>
+			<p class="form-field _<?= $this->type ?>_field ">
+				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+				<input x-cloak type="text"class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab]['<?= $this->slug ?>']" placeholder="">
 			</p>
 			<?php $input = ob_get_clean();
 		}

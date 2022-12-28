@@ -29,7 +29,7 @@ class RepeatableField
         $classes = "repeatable_$this->slug";
         ob_start() ?>
             <style>.wp-editor-area { color: black !important; }</style>
-            <div x-data='{ tabs: <?= $entries ?>, selected_tab: <?= $entries ? 0 : -1 ?>, entries: <?= $values ? json_encode($values) : "[]" ?> }' x-cloak style="margin-right: 9px; margin-bottom: 9px">
+            <div x-data='{ tabs: <?= $entries ?>, selected_tab: <?= $entries ? 0 : -1 ?>, entries: <?= $values ? str_replace("'", "’", json_encode($values)) : "[]" ?> }' x-cloak style="margin-right: 9px; margin-bottom: 9px">
                 <p style="font-size: 16px; font-weight: bold;"><?= $this->name ?></p>
                 <div style="display: flex; padding-left: 9px; padding-right: 9px; flex-wrap: wrap;">
                     <template x-for="tab in [...Array(tabs).keys()]">
@@ -40,8 +40,11 @@ class RepeatableField
                 <template x-for="tab in [...Array(tabs).keys()]">
                     <div :style="selected_tab === tab ? 'margin-left: 9px; padding: 9px; border: 1px gainsboro solid; display: flex; flex-direction: column;' : 'display: none'">
                         <?php foreach ($this->fields as $field): ?>
-                            <?php $field->display(); ?>
+                            <?php $field->display_complex(); ?>
                         <?php endforeach; ?>
+                        <div style="display: flex; justify-content: end;">
+                            <span class="dashicons dashicons-trash" style="cursor: pointer" @click="tabs -= 1; entries.splice(selected_tab, 1); selected_tab -= 1;"></span>
+                        </div>
                     </div>
                 </template>
                 <div x-show="tabs === 0" style="margin-left: 9px; border: 1px gainsboro solid; font-size: 16px;">

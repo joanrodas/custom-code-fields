@@ -28,7 +28,20 @@ class CheckboxField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input type="checkbox" x-cloak :checked="(typeof entries !== 'undefined' && tab < entries.length) ? (entries[tab]['<?= $this->slug ?>'] == '1' ? true : false) : <?= $checked ? 'true' : 'false' ?>" name="_<?= $this->save_individual ? $this->slug : $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
+				<input type="checkbox" <?= $checked === '1' ? 'checked' : '' ?> name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="1">
+			</p>
+			<?php $input = ob_get_clean();
+		}
+		echo $input;
+	}
+
+	public function display_complex() {
+		$input = '';
+		if ($this->type === 'checkbox') {
+			ob_start(); ?>
+			<p class="form-field _<?= $this->type ?>_field">
+				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+				<input x-cloak type="checkbox" :checked="entries[tab]['<?= $this->slug ?>'] == '1' ? true : false" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
 			</p>
 			<?php $input = ob_get_clean();
 		}

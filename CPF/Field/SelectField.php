@@ -31,13 +31,30 @@ class SelectField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<select class="short" style="" name="_<?= $this->save_individual ? $this->slug : $this->slug . '[]' ?>" id="_<?= $this->slug ?>">
+				<select class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>">
 					<?php foreach ($this->options as $option_key => $option_value) : ?>
-						<option value="<?= $option_key ?>" x-cloak :selected="(typeof entries !== 'undefined' && tab < entries.length) ? (entries[tab]['<?= $this->slug ?>'] === <?= $option_key ?>) : <?= $option_key == $value ? 'true' : 'false' ?>"><?= $option_value ?></option>
+						<option value="<?= $option_key ?>" <?= $option_key == $value ? 'selected' : '' ?>><?= $option_value ?></option>
 					<?php endforeach; ?>
 				</select>
 			</p>
-<?php $input = ob_get_clean();
+			<?php $input = ob_get_clean();
+		}
+		echo $input;
+	}
+
+	public function display_complex() {
+		$input = '';
+		if ($this->type == 'select') {
+			ob_start(); ?>
+			<p class="form-field _<?= $this->type ?>_field ">
+				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+				<select x-cloak class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>">
+					<?php foreach ($this->options as $option_key => $option_value) : ?>
+						<option value="<?= $option_key ?>" :selected="entries[tab]['<?= $this->slug ?>'] === '<?= $option_key ?>'"><?= $option_value ?></option>
+					<?php endforeach; ?>
+				</select>
+			</p>
+			<?php $input = ob_get_clean();
 		}
 		echo $input;
 	}
