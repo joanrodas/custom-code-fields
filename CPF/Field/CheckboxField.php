@@ -5,11 +5,12 @@ namespace CPF\Field;
 class CheckboxField
 {
 
-	public function __construct(string $type, string $slug, string $name)
+	public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
 	{
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
+		$this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
 
@@ -27,7 +28,20 @@ class CheckboxField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input type="checkbox" <?= $checked ? 'checked' : '' ?> name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="1">
+				<input type="checkbox" <?= $checked === '1' ? 'checked' : '' ?> name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="1">
+			</p>
+			<?php $input = ob_get_clean();
+		}
+		echo $input;
+	}
+
+	public function display_complex() {
+		$input = '';
+		if ($this->type === 'checkbox') {
+			ob_start(); ?>
+			<p class="form-field _<?= $this->type ?>_field">
+				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+				<input x-cloak type="checkbox" :checked="entries[tab]['<?= $this->slug ?>'] == '1' ? true : false" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
 			</p>
 			<?php $input = ob_get_clean();
 		}
@@ -36,6 +50,8 @@ class CheckboxField
 
 	public function save($product_id)
 	{
+		if (!$this->save_individual) return;
+		
 		$key = '_' . $this->slug;
 		if (isset($_POST[$key])) { // phpcs:ignore
 			update_post_meta($product_id, $key, '1'); // phpcs:ignore
