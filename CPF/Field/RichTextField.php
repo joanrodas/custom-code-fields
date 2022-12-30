@@ -6,11 +6,12 @@ class RichTextField
 {
     private $rows = 4;
 
-    public function __construct(string $type, string $slug, string $name)
+    public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
     {
         $this->type = $type;
         $this->slug = $slug;
         $this->name = $name;
+        $this->save_individual = $save_individual;
         add_action('woocommerce_process_product_meta', [$this, 'save']);
     }
 
@@ -26,7 +27,7 @@ class RichTextField
         $value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
         if ($this->type == 'rich_text') {
             ob_start(); ?>
-            <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px!important; margin: 9px 0;">
+            <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
                 <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
                 <?php
                 $args = array(
@@ -42,6 +43,26 @@ class RichTextField
         echo $input;
     }
 
+    public function display_complex() {
+        $input = '';
+        if ($this->type == 'rich_text') {
+            ob_start(); ?>
+            <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
+                <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+                <?php
+                $args = array(
+                    'media_buttons' => true,
+                    'textarea_name' => "_" . $this->slug . '[]',
+                    'textarea_rows' => $this->rows,
+                    'quicktags' => false,
+                );
+                wp_editor($value, "_" . $this->slug, $args); // TODO: NO FUNCIONA AL COMPLEX; JA QUE NO ES POT AFEGIR ALPINE ?>
+            </div>
+            <?php $input = ob_get_clean();
+        }
+        echo $input;
+    }
+
     public function rows($rows)
     {
         $this->rows = sanitize_text_field($rows);
@@ -50,6 +71,8 @@ class RichTextField
 
     public function save($product_id)
     {
+        if (!$this->save_individual) return;
+        
         $key = '_' . $this->slug;
         if (isset($_POST[$key])) { // phpcs:ignore
             update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
