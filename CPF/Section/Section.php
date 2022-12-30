@@ -1,9 +1,9 @@
 <?php
+
 namespace CPF\Section;
 
 class Section
 {
-
     private $slug;
     private $name;
     private $fields;
@@ -11,6 +11,10 @@ class Section
     private $product_type;
     private $checked;
     private $not_checked;
+    private $roles;
+    private $ids;
+    private $capabilities;
+    private $callable_conditional;
 
     public function __construct(string $slug, string $name, array $fields)
     {
@@ -21,6 +25,10 @@ class Section
         $this->product_type = [];
         $this->checked = [];
         $this->not_checked = [];
+        $this->roles = [];
+        $this->ids = [];
+        $this->capabilities = [];
+        $this->callable_conditional = false;
         add_action( 'woocommerce_product_options_general_product_data', array($this, 'display_default'));
     }
 
@@ -58,6 +66,30 @@ class Section
         $this->not_checked = (array) $values;
         return $this;
     }
+    
+    public function if_roles($values)
+    {
+      $this->roles = (array) $values;
+      return $this;
+    }
+
+    public function if_capabilities($values)
+    {
+      $this->capabilities = (array) $values;
+      return $this;
+    }
+
+    public function if_id($values)
+    {
+      $this->ids = (array) $values;
+      return $this;
+    }
+
+    public function if($callable_conditional)
+    {
+      $this->callable_conditional = $callable_conditional;
+      return $this;
+    }
 
     public static function create(string $slug, string $name, array $fields)
     {
@@ -66,6 +98,36 @@ class Section
 
     public function display()
     {
+        global $post;
+        //CHECK ROLES
+        if ($this->roles) {
+          $user = wp_get_current_user();
+          $roles = (array) $user->roles;
+          if (!array_intersect($roles, $this->roles)) return;
+        }
+
+        //CHECK CAPABILITIES
+        if ($this->capabilities) {
+          $has_cap = false;
+          foreach ($this->capabilities as $cap) {
+            if (current_user_can($cap)) {
+              $has_cap = true;
+              break;
+            }
+          }
+          if (!$has_cap) return;
+        }
+
+        //CHECK IDS
+        if ($this->ids) {
+          if ( !in_array($post->ID, $this->ids) ) return;
+        }
+
+        //CHECK CUSTOM CONDITION
+        if( $this->callable_conditional && is_callable($this->callable_conditional) ) {
+          if( !call_user_func($this->callable_conditional) ) return;
+        }
+    
         $classes = '';
         foreach ($this->product_type as $product_type) {
             $classes .= " show_if_$product_type";
@@ -86,5 +148,4 @@ class Section
             $this->display();
         }
     }
-
 }
