@@ -2,8 +2,11 @@
 
 namespace CPF\Field;
 
-class DateField
+class RangeField
 {
+	private $step;
+	private $max;
+	private $min;
 
 	public function __construct(string $type, string $slug, string $name)
 	{
@@ -23,13 +26,13 @@ class DateField
 	{
 		$input = '';
 		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
-		if ($this->type == 'date') {
+		if ($this->type == 'range') {
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input type="date" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
+				<input type="range"<?= $this->min ? ' min="'.$this->min.'"' : '' ?><?= $this->max ? ' max="'.$this->max.'"' : '' ?><?= $this->step ? ' step="'.$this->step.'"' : '' ?> class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
 			</p>
-			<?php $input = ob_get_clean();
+<?php $input = ob_get_clean();
 		}
 		echo $input;
 	}
@@ -40,5 +43,23 @@ class DateField
 		if (isset($_POST[$key])) { // phpcs:ignore
 			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
 		}
+	}
+
+	public function min($min)
+	{
+		$this->min = floatval($min);
+		return $this;
+	}
+
+	public function max($max)
+	{
+		$this->max = floatval($max);
+		return $this;
+	}
+
+	public function step($step)
+	{
+		$this->step = floatval($step);
+		return $this;
 	}
 }
