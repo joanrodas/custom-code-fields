@@ -44,4 +44,10 @@ class Tab
         return $this->slug;
     }
 
+    public function save($product_id) {
+        foreach ($this->fields as $field) {
+            $field->save($product_id);
+        }
+    }
+
 }

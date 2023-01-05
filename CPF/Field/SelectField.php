@@ -2,25 +2,15 @@
 
 namespace CPF\Field;
 
-class SelectField
+class SelectField extends Field
 {
 
 	private $options = [];
 
-	public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
+	public function __construct(string $type, string $slug, string $name)
 	{
-		$this->type = $type;
-		$this->slug = $slug;
-		$this->name = $name;
-		$this->options = apply_filters('cpf_select_' . $slug . '_options', []);
-		$this->save_individual = $save_individual;
-		add_action('woocommerce_process_product_meta', [$this, 'save']);
-	}
-
-
-	public static function create(string $type, string $slug, string $name)
-	{
-		return (new self($type, $slug, $name));
+		parent::__construct($type, $slug, $name);
+		$this->options = apply_filters("cpf_select_{$slug}_options", []);
 	}
 
 	public function display()
@@ -42,15 +32,16 @@ class SelectField
 		echo $input;
 	}
 
-	public function display_complex() {
+	public function display_complex(string $parent='') {
 		$input = '';
+		$key = $parent ? $parent . '_' . $this->slug : '_' . $this->slug;
 		if ($this->type == 'select') {
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
 				<select x-cloak class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>">
 					<?php foreach ($this->options as $option_key => $option_value) : ?>
-						<option value="<?= $option_key ?>" :selected="entries[tab]['<?= $this->slug ?>'] === '<?= $option_key ?>'"><?= $option_value ?></option>
+						<option value="<?= $option_key ?>" :selected="entries[tab] ? (entries[tab]['<?= $this->slug ?>'] === '<?= $option_key ?>') : ''"><?= $option_value ?></option>
 					<?php endforeach; ?>
 				</select>
 			</p>
@@ -77,13 +68,4 @@ class SelectField
 		return $this;
 	}
 
-	public function save($product_id)
-	{
-		if (!$this->save_individual) return;
-		
-		$key = '_' . $this->slug;
-		if (isset($_POST[$key])) { // phpcs:ignore
-			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
-		}
-	}
 }

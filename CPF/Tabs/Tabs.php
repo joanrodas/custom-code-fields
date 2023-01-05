@@ -43,4 +43,10 @@ class Tabs
 		<?php echo ob_get_clean();
     }
 
+    public function save($product_id) {
+        foreach ($this->tabs as $tab) {
+            $tab->save($product_id);
+        }
+    }
+
 }

@@ -15,11 +15,19 @@ class Field
         $this->name = $name;
     }
 
-
-    public static function create(string $type, string $slug, string $name, bool $save_individual = true)
+    public static function create(string $type, string $slug, string $name)
     {
         $class = __NAMESPACE__ . '\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $type))) . 'Field';
-        return (new $class($type, $slug, $name, $save_individual));
+        return (new $class($type, $slug, $name));
     }
+
+    public function save($product_id, $parent='')
+	{
+        error_log(print_r($_POST, true));
+		$key = $parent ? $parent . '_' . $this->slug : '_' . $this->slug;	
+		if (isset($_POST[$key])) { // phpcs:ignore
+			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
+		}
+	}
 
 }

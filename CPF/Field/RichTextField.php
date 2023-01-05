@@ -2,24 +2,9 @@
 
 namespace CPF\Field;
 
-class RichTextField
+class RichTextField extends Field
 {
     private $rows = 4;
-
-    public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
-    {
-        $this->type = $type;
-        $this->slug = $slug;
-        $this->name = $name;
-        $this->save_individual = $save_individual;
-        add_action('woocommerce_process_product_meta', [$this, 'save']);
-    }
-
-
-    public static function create(string $type, string $slug, string $name)
-    {
-        return (new self($type, $slug, $name));
-    }
 
     public function display()
     {
@@ -43,8 +28,9 @@ class RichTextField
         echo $input;
     }
 
-    public function display_complex() {
+    public function display_complex(string $parent='') {
         $input = '';
+        $key = $parent ? $parent . '_' . $this->slug : '_' . $this->slug;
         if ($this->type == 'rich_text') {
             ob_start(); ?>
             <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
@@ -69,13 +55,4 @@ class RichTextField
         return $this;
     }
 
-    public function save($product_id)
-    {
-        if (!$this->save_individual) return;
-        
-        $key = '_' . $this->slug;
-        if (isset($_POST[$key])) { // phpcs:ignore
-            update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
-        }
-    }
 }

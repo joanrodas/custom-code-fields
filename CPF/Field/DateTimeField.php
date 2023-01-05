@@ -2,22 +2,8 @@
 
 namespace CPF\Field;
 
-class DateTimeField
+class DateTimeField extends Field
 {
-
-	public function __construct(string $type, string $slug, string $name)
-	{
-		$this->type = $type;
-		$this->slug = $slug;
-		$this->name = $name;
-		add_action('woocommerce_process_product_meta', [$this, 'save']);
-	}
-
-
-	public static function create(string $type, string $slug, string $name)
-	{
-		return (new self($type, $slug, $name));
-	}
 
 	public function display()
 	{
@@ -34,11 +20,4 @@ class DateTimeField
 		echo $input;
 	}
 
-	public function save($product_id)
-	{
-		$key = '_' . $this->slug;
-		if (isset($_POST[$key])) { // phpcs:ignore
-			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
-		}
-	}
 }
