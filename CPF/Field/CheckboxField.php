@@ -24,9 +24,9 @@ class CheckboxField extends Field
 		$input = '';
 		if ($this->type === 'checkbox') {
 			ob_start(); ?>
-			<p class="form-field _<?= $this->type ?>_field">
-				<label :for="'<?= $parent . "_" ?>' + tab + '<?= "_".$this->slug ?>'"><?= $this->name ?></label>
-				<input x-cloak type="checkbox" :checked="entries[tab] ? (entries[tab]['<?= $this->slug ?>'] == '1' ? true : false) : false" :name="'<?= $parent . "_" ?>' + tab + '<?= "_".$this->slug ?>'" :id="'<?= $parent . "_" ?>' + tab + '<?= "_".$this->slug ?>'" value="1">
+			<p class="form-field _<?= $this->type ?>_field" x-data="{full_slug: '<?= $parent . "_" ?>' + tab + '<?= "_".$this->slug ?>'}">
+				<label :for="full_slug"><?= $this->name ?></label>
+				<input x-cloak type="checkbox" :checked="entries[tab] ? (entries[tab]['<?= $this->slug ?>'] == '1' ? true : false) : false" :name="full_slug" :id="full_slug" value="1">
 			</p>
 			<?php $input = ob_get_clean();
 		}

@@ -30,11 +30,10 @@ class RichTextField extends Field
 
     public function display_complex(string $parent='') {
         $input = '';
-        $key = $parent ? $parent . '_' . $this->slug : '_' . $this->slug;
         if ($this->type == 'rich_text') {
             ob_start(); ?>
-            <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
-                <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+            <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;" x-data="{full_slug: '<?= $parent . "_" ?>' + tab + '<?= "_".$this->slug ?>'}">
+                <label :for="full_slug"><?= $this->name ?></label>
                 <?php
                 $args = array(
                     'media_buttons' => true,

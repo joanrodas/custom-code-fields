@@ -22,12 +22,11 @@ class ColorField extends Field
 
 	public function display_complex(string $parent='') {
 		$input = '';
-		$key = $parent ? $parent . '_' . $this->slug : '_' . $this->slug;
 		if ($this->type == 'color') {
 			ob_start(); ?>
-			<p x-cloak class="form-field _<?= $this->type ?>_field ">
-				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input x-cloak type="color" class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : ''" placeholder=""> 
+			<p x-cloak class="form-field _<?= $this->type ?>_field " x-data="{full_slug: '<?= $parent . "_" ?>' + tab + '<?= "_".$this->slug ?>'}">
+				<label :for="full_slug"><?= $this->name ?></label>
+				<input x-cloak type="color" class="short" style="" :name="full_slug" :id="full_slug" :value="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : ''" placeholder=""> 
 			</p>
 			<?php $input = ob_get_clean();
 		}		

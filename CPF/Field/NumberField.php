@@ -25,12 +25,11 @@ class NumberField extends Field
 
 	public function display_complex(string $parent='') {
 		$input = '';
-		$key = $parent ? $parent . '_' . $this->slug : '_' . $this->slug;
 		if ($this->type == 'number') {
 			ob_start(); ?>
-			<p class="form-field _<?= $this->type ?>_field">
-				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input x-cloak type="number" <?= $this->min ? 'min="' . $this->min . '"' : '' ?> <?= $this->max ? 'max="' . $this->max . '"' : '' ?> <?= $this->step ? 'step="' . $this->step . '"': '' ?> class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : ''" placeholder="">
+			<p class="form-field _<?= $this->type ?>_field" x-data="{full_slug: '<?= $parent . "_" ?>' + tab + '<?= "_".$this->slug ?>'}">
+				<label :for="full_slug"><?= $this->name ?></label>
+				<input x-cloak type="number" <?= $this->min ? 'min="' . $this->min . '"' : '' ?> <?= $this->max ? 'max="' . $this->max . '"' : '' ?> <?= $this->step ? 'step="' . $this->step . '"': '' ?> class="short" style="" :name="full_slug" :id="full_slug" :value="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : ''" placeholder="">
 			</p>
 			<?php $input = ob_get_clean();
 		}

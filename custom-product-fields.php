@@ -25,20 +25,23 @@ add_action('after_setup_theme', function () {
 
 add_action('cpf_register_fields', function () {
 	CPF\Section\Section::create('section_slug', 'SECTION name', [
-		CPF\Field\Field::create('text', 'text_field', 'Text Field'),
-		CPF\Field\Field::create('textarea', 'textarea_field', 'Textarea Field'),
-		CPF\Field\Field::create('switch', 'switch_field', 'Switch Field'),
-		CPF\Field\Field::create('checkbox', 'checkbox_field', 'Checkbox Field'),
-		CPF\Field\Field::create('number', 'number_field', 'Number Field')->min(3)->max(23.5)->step(0.1),
-		CPF\Field\Field::create('color', 'color_field', 'Color Field'),
-		CPF\Field\Field::create('select', 'select_field', 'Select Field')->set_options('add_select_options'),
-		CPF\Field\Field::create('rich_text', 'rich_text_field', 'Rich Text Field'),
-		CPF\Tabs\Tabs::create('tabs', 'tabs_element', 'add_tabs'),
+		// CPF\Field\Field::create('text', 'text_field', 'Text Field'),
+		// CPF\Field\Field::create('textarea', 'textarea_field', 'Textarea Field'),
+		// CPF\Field\Field::create('switch', 'switch_field', 'Switch Field'),
+		// CPF\Field\Field::create('checkbox', 'checkbox_field', 'Checkbox Field'),
+		// CPF\Field\Field::create('number', 'number_field', 'Number Field')->min(3)->max(23.5)->step(0.1),
+		// CPF\Field\Field::create('color', 'color_field', 'Color Field'),
+		// CPF\Field\Field::create('select', 'select_field', 'Select Field')->set_options('add_select_options'),
+		// CPF\Field\Field::create('rich_text', 'rich_text_field', 'Rich Text Field'),
+		// CPF\Tabs\Tabs::create('tabs', 'tabs_element', 'add_tabs'),
 		CPF\Field\RepeatableField::create('milestone-complex', 'Milestones', [
 			CPF\Field\Field::create('text', 'step_name', 'Step Name'),
 			CPF\Field\Field::create('textarea', 'step_description', 'Step Description'),
 			CPF\Field\Field::create('checkbox', 'completed_step', 'Completed'),
-			CPF\Field\Field::create('color', 'inside_color', 'Inside color')
+			CPF\Field\Field::create('color', 'inside_color', 'Inside color'),
+			CPF\Field\RepeatableField::create('insidecomplex', 'Milestones', [
+				CPF\Field\Field::create('text', 'inside_step', 'Step Name Inside'),
+			]),
 		]),
 	])
 		->if_tab('general')

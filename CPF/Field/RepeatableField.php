@@ -27,7 +27,7 @@ class RepeatableField
     public function display(string $parent='') {
         $full_slug = $parent ? $parent . '_' . $this->slug : '_' . $this->slug;
         $values = get_post_meta(get_the_ID(), $full_slug, true);
-        $entries = $values ? count($values) : 0;
+        $entries = $values ? count($values) : 0; //TODO: ERROR
         $classes = "repeatable_$this->slug";
         ob_start() ?>
             <style>.wp-editor-area { color: black !important; }</style>
@@ -49,6 +49,7 @@ class RepeatableField
                         </div>
                     </div>
                 </template>
+                <input type="hidden" name="<?= $full_slug ?>" :value="tabs">
                 <div x-show="tabs === 0" style="margin-left: 9px; border: 1px gainsboro solid; font-size: 16px;">
                     <p style="font-size: 16px;">There are no entries yet.</p>
                     <button type="button" style="margin: 9px; padding: 9px; cursor: pointer;" @click="selected_tab = tabs; tabs += 1;">Add Entry</button>
@@ -58,12 +59,22 @@ class RepeatableField
     }
 
     public function save($product_id, $parent='') {
+        //TODO: FOR EACH ENTRY/TAB. Passar numtabs
         // $fields = array();
         $key = $parent ? $parent . '_' . $this->slug : '_' . $this->slug;
-        foreach ($this->fields as $field) {
-            // $fields[$field->slug] = $_POST['_' . $field->slug] ?? array();
-            $field->save($product_id, $key);
+        
+        if(isset($_POST[$key])) {
+            $num_entries = $_POST[$key];
+            update_post_meta($product_id, $key, $num_entries); //Save num entries
         }
+
+        for($i=0; $i < $num_entries; ++$i ) {
+            foreach ($this->fields as $field) {
+                // $fields[$field->slug] = $_POST['_' . $field->slug] ?? array();
+                $field->save($product_id, $key . '_' . $i);
+            }
+        }
+        
         // $results = array();
         // error_log(print_r($_POST, true));
         // for ($entry = 0; $entry < max(array_map('count', $fields)); $entry++) {

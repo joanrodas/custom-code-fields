@@ -92,7 +92,6 @@ class SwitchField extends Field
 
 	public function display_complex(string $parent='') {
 		$input = '';
-		$key = $parent ? $parent . '_' . $this->slug : '_' . $this->slug;
 		if ($this->type == 'switch') {
 			ob_start(); ?>
 			<style>
@@ -160,11 +159,11 @@ class SwitchField extends Field
 					border-radius: 50%;
 				}
 			</style>
-			<p class="form-field _<?= $this->type ?>_field ">
-				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+			<p class="form-field _<?= $this->type ?>_field " x-data="{full_slug: '<?= $parent . "_" ?>' + tab + '<?= "_".$this->slug ?>'}">
+				<label :for="full_slug"><?= $this->name ?></label>
 				<span>
 					<label class="switch">
-						<input x-cloak type="checkbox" :checked="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : false" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
+						<input x-cloak type="checkbox" :checked="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : false" :name="full_slug" :id="full_slug" value="1">
 						<span class="slider round"></span>
 					</label>
 				</span>
