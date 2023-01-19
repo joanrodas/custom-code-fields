@@ -13,6 +13,7 @@ class RangeField
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
+		$this->default_value = "";
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
 
@@ -26,6 +27,7 @@ class RangeField
 	{
 		$input = '';
 		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		if ($value == '') $value = $this->default_value;
 		if ($this->type == 'range') {
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
@@ -43,6 +45,12 @@ class RangeField
 		if (isset($_POST[$key])) { // phpcs:ignore
 			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
 		}
+	}
+
+	public function default_value($default_value) {
+		$this->default_value = $default_value;
+
+		return $this;
 	}
 
 	public function min($min)

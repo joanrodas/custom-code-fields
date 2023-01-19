@@ -13,6 +13,7 @@ class SelectField
 		$this->slug = $slug;
 		$this->name = $name;
 		$this->options = apply_filters('cpf_select_' . $slug . '_options', []);
+		$this->default_value = 0;
 		$this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
@@ -27,6 +28,7 @@ class SelectField
 	{
 		$input = '';
 		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		if ($value == '') $value = $this->default_value;
 		if ($this->type == 'select') {
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
@@ -50,13 +52,19 @@ class SelectField
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
 				<select x-cloak class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>">
 					<?php foreach ($this->options as $option_key => $option_value) : ?>
-						<option value="<?= $option_key ?>" :selected="entries[tab]['<?= $this->slug ?>'] === '<?= $option_key ?>'"><?= $option_value ?></option>
+						<option value="<?= $option_key ?>" :selected="entries[tab] ? (entries[tab]['<?= $this->slug ?>'] === '<?= $option_key ?>') : '<?= $this->default_value ?>' === '<?= $option_key ?>'"><?= $option_value ?></option>
 					<?php endforeach; ?>
 				</select>
 			</p>
 			<?php $input = ob_get_clean();
 		}
 		echo $input;
+	}
+
+	public function default_value($default_value) {
+		$this->default_value = $default_value;
+
+		return $this;
 	}
 
 	public function set_options($options)

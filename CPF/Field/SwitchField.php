@@ -10,6 +10,7 @@ class SwitchField
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
+		$this->default_value = false;
 		$this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
@@ -24,6 +25,7 @@ class SwitchField
 	{
 		$input = '';
 		$checked = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		if ($checked == '') $checked = $this->default_value;
 		if ($this->type == 'switch') {
 			ob_start(); ?>
 			<style>
@@ -178,7 +180,7 @@ class SwitchField
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
 				<span>
 					<label class="switch">
-						<input x-cloak type="checkbox" :checked="entries[tab]['<?= $this->slug ?>']" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
+						<input x-cloak type="checkbox" :checked="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : '<?= $this->default_value ? "true" : "false" ?>'" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
 						<span class="slider round"></span>
 					</label>
 				</span>
@@ -186,6 +188,12 @@ class SwitchField
 			<?php $input = ob_get_clean();
 		}
 		echo $input;
+	}
+
+	public function default_value($default_value) {
+		$this->default_value = $default_value;
+
+		return $this;
 	}
 
 	public function save($product_id)

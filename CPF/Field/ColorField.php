@@ -10,6 +10,7 @@ class ColorField
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
+		$this->default_value = "#000000";
 		$this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
@@ -24,6 +25,7 @@ class ColorField
 	{
 		$input = '';
 		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		if ($value == '') $value = $this->default_value;
 		if ($this->type == 'color') {
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
@@ -41,11 +43,17 @@ class ColorField
 			ob_start(); ?>
 			<p x-cloak class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input x-cloak type="color" class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab]['<?= $this->slug ?>']" placeholder=""> 
+				<input x-cloak type="color" class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : '<?= $this->default_value ?>'" placeholder=""> 
 			</p>
 			<?php $input = ob_get_clean();
 		}		
 		echo $input;
+	}
+
+	public function default_value($default_value) {
+		$this->default_value = $default_value;
+
+		return $this;
 	}
 
 	public function save($product_id)
