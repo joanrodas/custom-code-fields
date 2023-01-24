@@ -10,6 +10,7 @@ class CheckboxField
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
+		$this->default_value = '0';
 		$this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
@@ -24,6 +25,7 @@ class CheckboxField
 	{
 		$input = '';
 		$checked = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		if ($checked == '') $checked = $this->default_value;
 		if ($this->type == 'checkbox') {
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
@@ -41,11 +43,17 @@ class CheckboxField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input x-cloak type="checkbox" :checked="entries[tab]['<?= $this->slug ?>'] == '1' ? true : false" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
+				<input x-cloak type="checkbox" :checked="entries[tab] ? (entries[tab]['<?= $this->slug ?>'] == '1' ? true : false) : ('<?= $this->default_value ?>' == '1' ? true : false)" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
 			</p>
 			<?php $input = ob_get_clean();
 		}
 		echo $input;
+	}
+
+	public function default_value($default_value) {
+		$this->default_value = $default_value;
+
+		return $this;
 	}
 
 	public function save($product_id)

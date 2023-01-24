@@ -11,6 +11,7 @@ class RichTextField
         $this->type = $type;
         $this->slug = $slug;
         $this->name = $name;
+        $this->default_value = "";
         $this->save_individual = $save_individual;
         add_action('woocommerce_process_product_meta', [$this, 'save']);
     }
@@ -25,6 +26,7 @@ class RichTextField
     {
         $input = '';
         $value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+        if ($value == '') $value = $this->default_value;
         if ($this->type == 'rich_text') {
             ob_start(); ?>
             <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
@@ -62,6 +64,12 @@ class RichTextField
         }
         echo $input;
     }
+
+    public function default_value($default_value) {
+		$this->default_value = $default_value;
+
+		return $this;
+	}
 
     public function rows($rows)
     {

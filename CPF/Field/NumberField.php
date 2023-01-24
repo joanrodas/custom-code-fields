@@ -13,6 +13,7 @@ class NumberField
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
+		$this->default_value = "";
 		$this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
@@ -27,6 +28,7 @@ class NumberField
 	{
 		$input = '';
 		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		if ($value == '') $value = $this->default_value;
 		if ($this->type == 'number') {
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
@@ -44,11 +46,17 @@ class NumberField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input x-cloak type="number" <?= $this->min ? 'min="' . $this->min . '"' : '' ?> <?= $this->max ? 'max="' . $this->max . '"' : '' ?> <?= $this->step ? 'step="' . $this->step . '"': '' ?> class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab]['<?= $this->slug ?>']" placeholder="">
+				<input x-cloak type="number" <?= $this->min ? 'min="' . $this->min . '"' : '' ?> <?= $this->max ? 'max="' . $this->max . '"' : '' ?> <?= $this->step ? 'step="' . $this->step . '"': '' ?> class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : '<?= $this->default_value ?>'" placeholder="">
 			</p>
 			<?php $input = ob_get_clean();
 		}
 		echo $input;
+	}
+
+	public function default_value($default_value) {
+		$this->default_value = $default_value;
+
+		return $this;
 	}
 
 	public function save($product_id)

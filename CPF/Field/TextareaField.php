@@ -11,6 +11,7 @@ class TextareaField
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
+		$this->default_value = "";
         $this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
@@ -25,6 +26,7 @@ class TextareaField
 	{
 		$input = '';
         $value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		if ($value == '') $value = $this->default_value;
 		if ($this->type == 'textarea') {
 			ob_start(); ?>
             <p class="form-field _<?= $this->type ?>_field ">
@@ -42,11 +44,17 @@ class TextareaField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<textarea x-cloak class="short" style="<?= $this->height ? 'height:' . $this->height . ';' : 'height: 10rem;' ?>" name="_<?= $this->slug . '[]' ?>" id="<?= $this->slug ?>" placeholder rows="4" cols="20" x-text="entries[tab]['<?= $this->slug ?>']"></textarea>
+				<textarea x-cloak class="short" style="<?= $this->height ? 'height:' . $this->height . ';' : 'height: 10rem;' ?>" name="_<?= $this->slug . '[]' ?>" id="<?= $this->slug ?>" placeholder rows="4" cols="20" x-text="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : '<?= $this->default_value ?>'"></textarea>
 			</p>
 			<?php $input = ob_get_clean();
 		}
 		echo $input;
+	}
+
+	public function default_value($default_value) {
+		$this->default_value = $default_value;
+
+		return $this;
 	}
 
     public function height($height)
