@@ -10,6 +10,7 @@ class TextField
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
+		$this->datalist = apply_filters( 'cpf_text_' . $slug . '_datalist', [] );
 		$this->default_value = "";
 		$this->save_individual = $save_individual;
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
@@ -30,7 +31,14 @@ class TextField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input type="text" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
+				<input type="text" <?= !empty($this->datalist) ? 'list="_' . $this->slug . '_datalist"' : '' ?> class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
+				<?php if (!empty($this->datalist)): ?>
+					<datalist id="_<?= $this->slug ?>_datalist">
+					<?php foreach( $this->datalist as $option ): ?>
+						<option value="<?= $option ?>">
+					<?php endforeach; ?>
+					</datalist>
+				<?php endif; ?>
 			</p>
 			<?php $input = ob_get_clean();
 		}
@@ -43,7 +51,14 @@ class TextField
 			ob_start(); ?>
 			<p class="form-field _<?= $this->type ?>_field ">
 				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input x-cloak type="text"class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : '<?= $this->default_value ?>'" placeholder="">
+				<input x-cloak type="text" <?= !empty($this->datalist) ? 'list="_' . $this->slug . '_datalist"' : '' ?> class="short" style="" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" :value="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : '<?= $this->default_value ?>'" placeholder="">
+				<?php if (!empty($this->datalist)): ?>
+					<datalist id="_<?= $this->slug ?>_datalist">
+					<?php foreach( $this->datalist as $option ): ?>
+						<option value="<?= $option ?>">
+					<?php endforeach; ?>
+					</datalist>
+				<?php endif; ?>
 			</p>
 			<?php $input = ob_get_clean();
 		}
@@ -53,6 +68,12 @@ class TextField
 	public function default_value($default_value) {
 		$this->default_value = $default_value;
 
+		return $this;
+	}
+
+	public function set_datalist($datalist) {
+		if (is_callable($datalist)) $datalist = call_user_func($datalist);
+		$this->datalist = (array) $datalist;
 		return $this;
 	}
 
