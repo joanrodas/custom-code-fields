@@ -10,7 +10,7 @@ class DateField
 		$this->type = $type;
 		$this->slug = $slug;
 		$this->name = $name;
-		$this->default_value = date();
+		$this->default_value = date('Y-m-d');
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
 
