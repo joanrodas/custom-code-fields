@@ -32,6 +32,11 @@ class Loader
 		// add_action( 'init', array( $this, 'trigger_fields_register' ), 0 );
 		// add_action( 'rest_api_init', array( $this, 'initialize_widgets' ) );
 		// add_action( 'carbon_fields_fields_registered', array( $this, 'initialize_containers' ) );
+
+		add_action('post_edit_form_tag', function () {
+			echo ' enctype="multipart/form-data"';
+		});
+
 		add_action( 'admin_enqueue_scripts', function ($hook) {
 			global $typenow;
 			if($typenow === 'product' && ($hook === 'post-new.php' || $hook === 'post.php')) {
