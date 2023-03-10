@@ -15,11 +15,11 @@ class DateTimeField extends Field
 	public function display($parent='')
 	{
 		$key = $parent . '_' . $this->slug;
-		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		$value = get_post_meta(get_the_ID(), $key, true);
 		ob_start(); ?>
 		<p class="form-field _<?= $this->type ?>_field ">
-			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-			<input type="datetime-local" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
+			<label for="<?= $key ?>"><?= $this->name ?></label>
+			<input type="datetime-local" class="short" style="" name="<?= $key ?>" id="<?= $key ?>" value="<?= $value ?>" placeholder="">
 		</p>
 		<?php echo ob_get_clean();
 	}
@@ -28,11 +28,11 @@ class DateTimeField extends Field
 	public function display_complex($parent='')
 	{
 		$key = $parent . '_' . $this->slug;
-		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		$value = get_post_meta(get_the_ID(), $key, true);
 		ob_start(); ?>
 		<p class="form-field _<?= $this->type ?>_field ">
-			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-			<input type="datetime-local" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
+			<label for="<?= $key ?>"><?= $this->name ?></label>
+			<input type="datetime-local" class="short" style="" name="<?= $key ?>" id="<?= $key ?>" value="<?= $value ?>" placeholder="">
 		</p>
 		<?php echo ob_get_clean();
 	}

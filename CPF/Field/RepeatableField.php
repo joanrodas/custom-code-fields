@@ -4,7 +4,6 @@ namespace CPF\Field;
 
 class RepeatableField
 {
-
     private $slug;
     private $name;
     private $fields;
@@ -20,10 +19,15 @@ class RepeatableField
         return (new self($slug, $name, $fields));
     }
 
+    public function display_complex($parent='') {
+        $this->display($parent);
+    }
+
     public function display($parent='') {
-        $values = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+        $key = $parent . '_' . $this->slug;
+        $values = get_post_meta(get_the_ID(), $key, true);
         $entries = $values ? count($values) : 0;
-        $classes = "repeatable_$this->slug";
+        $classes = "repeatable_$this->slug repeatable_$key";
         ob_start() ?>
             <style>.wp-editor-area { color: black !important; }</style>
             <div x-data='{ tabs: <?= $entries ?>, selected_tab: <?= $entries ? 0 : -1 ?>, entries: <?= $values ? str_replace("'", "’", json_encode($values)) : "[]" ?> }' x-cloak style="margin-right: 9px; margin-bottom: 9px">
@@ -37,7 +41,7 @@ class RepeatableField
                 <template x-for="tab in [...Array(tabs).keys()]">
                     <div :style="selected_tab === tab ? 'margin-left: 9px; padding: 9px; border: 1px gainsboro solid; display: flex; flex-direction: column;' : 'display: none'">
                         <?php foreach ($this->fields as $field): ?>
-                            <?php $field->display_complex(); ?>
+                            <?php $field->display_complex($key); ?>
                         <?php endforeach; ?>
                         <div style="display: flex; justify-content: end;">
                             <span class="dashicons dashicons-trash" style="cursor: pointer" @click="tabs -= 1; entries.splice(selected_tab, 1); selected_tab -= 1;"></span>

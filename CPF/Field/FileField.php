@@ -8,12 +8,12 @@ class FileField extends Field
 	public function display($parent='')
 	{
         $key = $parent . '_' . $this->slug;
-		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		$value = get_post_meta(get_the_ID(), $key, true);
         ob_start(); ?>
         <p class="form-field _<?= $this->type ?>_field" x-data="{ files: null }">
-            <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="_<?= $this->slug ?>">
-                <input type="file" style="display: none;" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" x-on:change="files = Object.values($event.target.files)">
+            <label for="<?= $key ?>"><?= $this->name ?></label>
+            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="<?= $key ?>">
+                <input type="file" style="display: none;" name="<?= $key ?>" id="<?= $key ?>" x-on:change="files = Object.values($event.target.files)">
                 <?php if(!$value): ?>
                     <span x-text="files ? files.map(file => file.name).join(', ') : 'Choose files'"></span>
                 <?php else: ?>
@@ -28,12 +28,12 @@ class FileField extends Field
     public function display_complex($parent='')
 	{
         $key = $parent . '_' . $this->slug;
-		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		$value = get_post_meta(get_the_ID(), $key, true);
         ob_start(); ?>
         <p class="form-field _<?= $this->type ?>_field" x-data="{ files: null }">
-            <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="_<?= $this->slug ?>">
-                <input type="file" style="display: none;" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" x-on:change="files = Object.values($event.target.files)">
+            <label for="<?= $key ?>"><?= $this->name ?></label>
+            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="<?= $key ?>">
+                <input type="file" style="display: none;" name="<?= $key ?>" id="<?= $key ?>" x-on:change="files = Object.values($event.target.files)">
                 <?php if(!$value): ?>
                     <span x-text="files ? files.map(file => file.name).join(', ') : 'Choose files'"></span>
                 <?php else: ?>

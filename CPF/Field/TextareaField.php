@@ -9,12 +9,12 @@ class TextareaField extends Field
 	public function display($parent='')
 	{
 		$key = $parent . '_' . $this->slug;
-        $value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+        $value = get_post_meta(get_the_ID(), $key, true);
 		if ($value == '') $value = $this->default_value;
 		ob_start(); ?>
 		<p class="form-field _<?= $this->type ?>_field ">
-			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-			<textarea class="short" style="<?= $this->height ? 'height:'.$this->height.';' : 'height:10rem;' ?>" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" placeholder="" rows="4" cols="20"><?= $value ?></textarea>
+			<label for="<?= $key ?>"><?= $this->name ?></label>
+			<textarea class="short" style="<?= $this->height ? 'height:'.$this->height.';' : 'height:10rem;' ?>" name="<?= $key ?>" id="<?= $key ?>" placeholder="" rows="4" cols="20"><?= $value ?></textarea>
 		</p>
 		<?php echo ob_get_clean();
 	}
@@ -24,8 +24,8 @@ class TextareaField extends Field
 		$key = $parent . '_' . $this->slug;
 		ob_start(); ?>
 		<p class="form-field _<?= $this->type ?>_field ">
-			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-			<textarea x-cloak class="short" style="<?= $this->height ? 'height:' . $this->height . ';' : 'height: 10rem;' ?>" name="_<?= $this->slug . '[]' ?>" id="<?= $this->slug ?>" placeholder rows="4" cols="20" x-text="entries[tab] ? entries[tab]['<?= $this->slug ?>'] : '<?= $this->default_value ?>'"></textarea>
+			<label for="<?= $key ?>"><?= $this->name ?></label>
+			<textarea x-cloak class="short" style="<?= $this->height ? 'height:' . $this->height . ';' : 'height: 10rem;' ?>" name="<?= $key . '[]' ?>" id="<?= $key ?>" placeholder rows="4" cols="20" x-text="entries[tab] ? entries[tab]['<?= $key ?>'] : '<?= $this->default_value ?>'"></textarea>
 		</p>
 		<?php echo ob_get_clean();
 	}

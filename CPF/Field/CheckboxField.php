@@ -14,12 +14,12 @@ class CheckboxField extends Field
 	public function display($parent='')
 	{
 		$key = $parent . '_' . $this->slug;
-		$checked = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		$checked = get_post_meta(get_the_ID(), $key, true);
 		if ($checked == '') $checked = $this->default_value;
 		ob_start(); ?>
 		<p class="form-field _<?= $this->type ?>_field ">
-			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-			<input type="checkbox" <?= $checked === '1' ? 'checked' : '' ?> name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="1">
+			<label for="<?= $key ?>"><?= $this->name ?></label>
+			<input type="checkbox" <?= $checked === '1' ? 'checked' : '' ?> name="<?= $key ?>" id="<?= $key ?>" value="1">
 		</p>
 		<?php echo ob_get_clean();
 	}
@@ -28,8 +28,8 @@ class CheckboxField extends Field
 		$key = $parent . '_' . $this->slug;
 		ob_start(); ?>
 		<p class="form-field _<?= $this->type ?>_field">
-			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-			<input x-cloak type="checkbox" :checked="entries[tab] ? (entries[tab]['<?= $this->slug ?>'] == '1' ? true : false) : ('<?= $this->default_value ?>' == '1' ? true : false)" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
+			<label for="<?= $key ?>"><?= $this->name ?></label>
+			<input x-cloak type="checkbox" :checked="entries[tab] ? (entries[tab]['<?= $key ?>'] == '1' ? true : false) : ('<?= $this->default_value ?>' == '1' ? true : false)" name="<?= $key . '[]' ?>" id="<?= $key ?>" value="1">
 		</p>
 		<?php echo ob_get_clean();
 	}

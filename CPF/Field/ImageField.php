@@ -8,14 +8,14 @@ class ImageField extends Field
 	public function display($parent='')
 	{
 		$key = $parent . '_' . $this->slug;
-		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		$value = get_post_meta(get_the_ID(), $key, true);
         $image = $value ? wp_get_attachment_image_url($value) : '';
         ob_start(); ?>
         <p class="form-field _<?= $this->type ?>_field" x-data="{ image_file: false, image_src: '<?= $image ?>' }">
-            <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="_<?= $this->slug ?>">
-                <input type="file" accept="image/*" style="display: none;" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" @change="image_file = $event.target.files > 0 ? $event.target.files[0] : false; image_src = (image_file ? URL.createObjectURL(image_file) : '')">
-                <input type="hidden" :value="image_src" name="_<?= $this->slug ?>_src">
+            <label for="<?= $key ?>"><?= $this->name ?></label>
+            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="<?= $key ?>">
+                <input type="file" accept="image/*" style="display: none;" name="<?= $key ?>" id="<?= $key ?>" @change="image_file = $event.target.files > 0 ? $event.target.files[0] : false; image_src = (image_file ? URL.createObjectURL(image_file) : '')">
+                <input type="hidden" :value="image_src" name="<?= $key ?>_src">
                 <span x-text="image_src ? '' : 'Choose image'"></span>
                 <span style="display: flex; gap: 1rem; align-items: center;">
                     <template x-cloak x-if="image_src">
@@ -32,14 +32,14 @@ class ImageField extends Field
     public function display_complex($parent='')
 	{
 		$key = $parent . '_' . $this->slug;
-		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		$value = get_post_meta(get_the_ID(), $key, true);
         $image = $value ? wp_get_attachment_image_url($value) : '';
         ob_start(); ?>
         <p class="form-field _<?= $this->type ?>_field" x-data="{ image_file: false, image_src: '<?= $image ?>' }">
-            <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="_<?= $this->slug ?>">
-                <input type="file" accept="image/*" style="display: none;" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" @change="image_file = $event.target.files > 0 ? $event.target.files[0] : false; image_src = (image_file ? URL.createObjectURL(image_file) : '')">
-                <input type="hidden" :value="image_src" name="_<?= $this->slug ?>_src">
+            <label for="<?= $key ?>"><?= $this->name ?></label>
+            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="<?= $key ?>">
+                <input type="file" accept="image/*" style="display: none;" name="<?= $key ?>" id="<?= $key ?>" @change="image_file = $event.target.files > 0 ? $event.target.files[0] : false; image_src = (image_file ? URL.createObjectURL(image_file) : '')">
+                <input type="hidden" :value="image_src" name="<?= $key ?>_src">
                 <span x-text="image_src ? '' : 'Choose image'"></span>
                 <span style="display: flex; gap: 1rem; align-items: center;">
                     <template x-cloak x-if="image_src">
