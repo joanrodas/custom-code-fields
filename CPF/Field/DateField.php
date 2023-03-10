@@ -2,51 +2,41 @@
 
 namespace CPF\Field;
 
-class DateField
+class DateField extends Field
 {
+	use Traits\Datalist;
 
 	public function __construct(string $type, string $slug, string $name)
 	{
-		$this->type = $type;
-		$this->slug = $slug;
-		$this->name = $name;
+		parent::__construct($type, $slug, $name);
 		$this->default_value = date('Y-m-d');
-		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
 
-
-	public static function create(string $type, string $slug, string $name)
+	public function display($parent='')
 	{
-		return (new self($type, $slug, $name));
-	}
-
-	public function display()
-	{
-		$input = '';
+		$key = $parent . '_' . $this->slug;
 		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
 		if ($value == '') $value = $this->default_value;
-		if ($this->type == 'date') {
-			ob_start(); ?>
-			<p class="form-field _<?= $this->type ?>_field ">
-				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input type="date" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
-			</p>
-			<?php $input = ob_get_clean();
-		}
-		echo $input;
+		ob_start(); ?>
+		<p class="form-field _<?= $this->type ?>_field ">
+			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+			<input type="date" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
+		</p>
+		<?php echo ob_get_clean();
 	}
-
-	public function default_value($default_value) {
-		$this->default_value = $default_value;
-
-		return $this;
-	}
-
-	public function save($product_id)
+	
+	//TODO: COMPLEX
+	public function display_complex($parent='')
 	{
-		$key = '_' . $this->slug;
-		if (isset($_POST[$key])) { // phpcs:ignore
-			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
-		}
+		$key = $parent . '_' . $this->slug;
+		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		if ($value == '') $value = $this->default_value;
+		ob_start(); ?>
+		<p class="form-field _<?= $this->type ?>_field ">
+			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+			<input type="date" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
+		</p>
+		<?php echo ob_get_clean();
 	}
+
 }

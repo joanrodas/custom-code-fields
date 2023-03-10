@@ -2,65 +2,41 @@
 
 namespace CPF\Field;
 
-class CheckboxField
+class CheckboxField extends Field
 {
 
-	public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
+	public function __construct(string $type, string $slug, string $name)
 	{
-		$this->type = $type;
-		$this->slug = $slug;
-		$this->name = $name;
+		parent::__construct($type, $slug, $name);
 		$this->default_value = '0';
-		$this->save_individual = $save_individual;
-		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
 
-
-	public static function create(string $type, string $slug, string $name)
+	public function display($parent='')
 	{
-		return (new self($type, $slug, $name));
-	}
-
-	public function display()
-	{
-		$input = '';
+		$key = $parent . '_' . $this->slug;
 		$checked = get_post_meta(get_the_ID(), '_' . $this->slug, true);
 		if ($checked == '') $checked = $this->default_value;
-		if ($this->type == 'checkbox') {
-			ob_start(); ?>
-			<p class="form-field _<?= $this->type ?>_field ">
-				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input type="checkbox" <?= $checked === '1' ? 'checked' : '' ?> name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="1">
-			</p>
-			<?php $input = ob_get_clean();
-		}
-		echo $input;
+		ob_start(); ?>
+		<p class="form-field _<?= $this->type ?>_field ">
+			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+			<input type="checkbox" <?= $checked === '1' ? 'checked' : '' ?> name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="1">
+		</p>
+		<?php echo ob_get_clean();
 	}
 
-	public function display_complex() {
-		$input = '';
-		if ($this->type === 'checkbox') {
-			ob_start(); ?>
-			<p class="form-field _<?= $this->type ?>_field">
-				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input x-cloak type="checkbox" :checked="entries[tab] ? (entries[tab]['<?= $this->slug ?>'] == '1' ? true : false) : ('<?= $this->default_value ?>' == '1' ? true : false)" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
-			</p>
-			<?php $input = ob_get_clean();
-		}
-		echo $input;
+	public function display_complex($parent='') {
+		$key = $parent . '_' . $this->slug;
+		ob_start(); ?>
+		<p class="form-field _<?= $this->type ?>_field">
+			<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+			<input x-cloak type="checkbox" :checked="entries[tab] ? (entries[tab]['<?= $this->slug ?>'] == '1' ? true : false) : ('<?= $this->default_value ?>' == '1' ? true : false)" name="_<?= $this->slug . '[]' ?>" id="_<?= $this->slug ?>" value="1">
+		</p>
+		<?php echo ob_get_clean();
 	}
 
-	public function default_value($default_value) {
-		$this->default_value = $default_value;
-
-		return $this;
-	}
-
-	public function save($product_id)
-	{
-		if (!$this->save_individual) return;
-		
-		$key = '_' . $this->slug;
+	public function save($product_id, $parent='')
+	{		
+		$key = $parent . '_' . $this->slug;
 		if (isset($_POST[$key])) { // phpcs:ignore
 			update_post_meta($product_id, $key, '1'); // phpcs:ignore
 		}

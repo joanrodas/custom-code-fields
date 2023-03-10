@@ -9,21 +9,18 @@ class RepeatableField
     private $name;
     private $fields;
 
-    public function __construct(string $slug, string $name, $fields, bool $save_individual = true) {
+    public function __construct(string $slug, string $name, $fields) {
         $this->slug = $slug;
         $this->name = $name;
         if (is_callable($fields)) $fields = call_user_func($fields);
         $this->fields = (array) $fields;
-        array_map( function ($field) { $field->save_individual = false; }, $this->fields );
-        $this->save_individual = $save_individual;
-        add_action('woocommerce_process_product_meta', [$this, 'save']);
     }
 
     public static function create(string $slug, string $name, $fields) {
         return (new self($slug, $name, $fields));
     }
 
-    public function display() {
+    public function display($parent='') {
         $values = get_post_meta(get_the_ID(), '_' . $this->slug, true);
         $entries = $values ? count($values) : 0;
         $classes = "repeatable_$this->slug";
@@ -55,20 +52,13 @@ class RepeatableField
         <?php echo ob_get_clean();
     }
 
-    public function save($product_id) {
-        $fields = array();
+    public function save($product_id, $parent='')
+    {
+        $key = $parent . '_' . $this->slug;
         foreach ($this->fields as $field) {
-            $fields[$field->slug] = $_POST['_' . $field->slug] ?? array();
+            $field->save($product_id, $key);
         }
-        $results = array();
-        for ($entry = 0; $entry < max(array_map('count', $fields)); $entry++) {
-            $results[$entry] = array();
-            foreach($fields as $slug => $field) {
-                $results[$entry][$slug] = $field[$entry] ?? '';
-            }
-        }
-        $key = '_' . $this->slug;
-        if(!empty($results)) update_post_meta($product_id, $key, $results);
+        update_post_meta($product_id, $key, count($this->fields));
     }
 
 }

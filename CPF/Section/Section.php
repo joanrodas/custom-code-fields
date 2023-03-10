@@ -29,7 +29,8 @@ class Section
         $this->ids = [];
         $this->capabilities = [];
         $this->callable_conditional = false;
-        add_action( 'woocommerce_product_options_general_product_data', array($this, 'display_default'));
+        add_action('woocommerce_product_options_general_product_data', [$this, 'display_default']);
+        add_action('woocommerce_process_product_meta', [$this, 'save']);
     }
 
     public function if_tab(string $tab)
@@ -44,7 +45,7 @@ class Section
             } );
         }
         else {
-            add_action( "woocommerce_product_options_${tab}_product_data", array($this, 'display'));
+            add_action( "woocommerce_product_options_{$tab}_product_data", array($this, 'display'));
         }
         return $this;
     }

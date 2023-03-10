@@ -24,5 +24,15 @@ add_action('after_setup_theme', function () {
 });
 
 add_action('cpf_register_fields', function () {
-
+	CPF\Section\Section::create('section_slug', 'SECTION name', [
+		CPF\Field\Field::create('textarea', 'textarea_field', 'Textarea Field'),
+		CPF\Field\Field::create('switch', 'switch_field', 'Switch Field'),
+		CPF\Field\Field::create('number', 'number_field', 'Number Field')->min(3)->max(23.5)->step(0.1),
+		CPF\Field\Field::create('file', 'file_field', 'File Field'),
+		CPF\Field\Field::create('image', 'image_field', 'Image Field'),
+	])
+		->if_tab('general')
+		// ->if_product_type(['simple', 'variable'])
+		// ->if_checked('virtual')
+		;
 });

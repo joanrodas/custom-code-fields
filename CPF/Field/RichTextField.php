@@ -2,74 +2,47 @@
 
 namespace CPF\Field;
 
-class RichTextField
+class RichTextField extends Field
 {
     private $rows = 4;
 
-    public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
+    public function display($parent='')
     {
-        $this->type = $type;
-        $this->slug = $slug;
-        $this->name = $name;
-        $this->default_value = "";
-        $this->save_individual = $save_individual;
-        add_action('woocommerce_process_product_meta', [$this, 'save']);
-    }
-
-
-    public static function create(string $type, string $slug, string $name)
-    {
-        return (new self($type, $slug, $name));
-    }
-
-    public function display()
-    {
-        $input = '';
+        $key = $parent . '_' . $this->slug;
         $value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
         if ($value == '') $value = $this->default_value;
-        if ($this->type == 'rich_text') {
-            ob_start(); ?>
-            <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
-                <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-                <?php
-                $args = array(
-                    'media_buttons' => true, // This setting removes the media button.
-                    'textarea_name' => "_" . $this->slug, // Set custom name.
-                    'textarea_rows' => $this->rows, //Determine the number of rows.
-                    'quicktags' => false, // Remove view as HTML button.
-                );
-                wp_editor($value, "_" . $this->slug, $args); ?>
-            </div>
-            <?php $input = ob_get_clean();
-        }
-        echo $input;
+        ob_start(); ?>
+        <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
+            <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+            <?php
+            $args = array(
+                'media_buttons' => true, // This setting removes the media button.
+                'textarea_name' => "_" . $this->slug, // Set custom name.
+                'textarea_rows' => $this->rows, //Determine the number of rows.
+                'quicktags' => false, // Remove view as HTML button.
+            );
+            wp_editor($value, "_" . $this->slug, $args); ?>
+        </div>
+        <?php echo ob_get_clean();
     }
 
-    public function display_complex() {
-        $input = '';
-        if ($this->type == 'rich_text') {
-            ob_start(); ?>
-            <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
-                <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-                <?php
-                $args = array(
-                    'media_buttons' => true,
-                    'textarea_name' => "_" . $this->slug . '[]',
-                    'textarea_rows' => $this->rows,
-                    'quicktags' => false,
-                );
-                wp_editor($value, "_" . $this->slug, $args); // TODO: NO FUNCIONA AL COMPLEX; JA QUE NO ES POT AFEGIR ALPINE ?>
-            </div>
-            <?php $input = ob_get_clean();
-        }
-        echo $input;
+    public function display_complex($parent='')
+    {
+        $key = $parent . '_' . $this->slug;
+        ob_start(); ?>
+        <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
+            <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
+            <?php
+            $args = array(
+                'media_buttons' => true,
+                'textarea_name' => "_" . $this->slug . '[]',
+                'textarea_rows' => $this->rows,
+                'quicktags' => false,
+            );
+            wp_editor($value, "_" . $this->slug, $args); // TODO: NO FUNCIONA AL COMPLEX; JA QUE NO ES POT AFEGIR ALPINE ?>
+        </div>
+        <?php echo ob_get_clean();
     }
-
-    public function default_value($default_value) {
-		$this->default_value = $default_value;
-
-		return $this;
-	}
 
     public function rows($rows)
     {
@@ -77,13 +50,4 @@ class RichTextField
         return $this;
     }
 
-    public function save($product_id)
-    {
-        if (!$this->save_individual) return;
-        
-        $key = '_' . $this->slug;
-        if (isset($_POST[$key])) { // phpcs:ignore
-            update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
-        }
-    }
 }
