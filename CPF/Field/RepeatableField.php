@@ -25,12 +25,12 @@ class RepeatableField
 
     public function display($parent='') {
         $key = $parent . '_' . $this->slug;
-        $values = get_post_meta(get_the_ID(), $key, true);
-        $entries = $values ? count($values) : 0;
+        $product_id = get_the_ID();
+        $num_entries = get_post_meta($product_id, $key, true);
         $classes = "repeatable_$this->slug repeatable_$key";
         ob_start() ?>
             <style>.wp-editor-area { color: black !important; }</style>
-            <div x-data='{ tabs: <?= $entries ?>, selected_tab: <?= $entries ? 0 : -1 ?>, entries: <?= $values ? str_replace("'", "’", json_encode($values)) : "[]" ?> }' x-cloak style="margin-right: 9px; margin-bottom: 9px">
+            <div x-data='{ tabs: <?= $num_entries ?>, selected_tab: <?= $num_entries ? 0 : -1 ?> }' x-cloak style="margin-right: 9px; margin-bottom: 9px">
                 <p style="font-size: 16px; font-weight: bold;"><?= $this->name ?></p>
                 <div style="display: flex; padding-left: 9px; padding-right: 9px; flex-wrap: wrap;">
                     <template x-for="tab in [...Array(tabs).keys()]">
@@ -38,13 +38,14 @@ class RepeatableField
                     </template>
                     <div :style="'padding: 10px 15px; margin: 0; font-size: 16px; font-weight: bold; border: 1px gainsboro solid; cursor: pointer;' + (tabs === 0 ? 'border-bottom-color: white;' : 'background-color: ghostwhite;')" @click="selected_tab = tabs; tabs += 1;">+</div>
                 </div>
+                <input type="hidden" :value="tabs" name="<?= $key ?>" id="<?= $key ?>">
                 <template x-for="tab in [...Array(tabs).keys()]">
                     <div :style="selected_tab === tab ? 'margin-left: 9px; padding: 9px; border: 1px gainsboro solid; display: flex; flex-direction: column;' : 'display: none'">
                         <?php foreach ($this->fields as $field): ?>
                             <?php $field->display_complex($key); ?>
                         <?php endforeach; ?>
                         <div style="display: flex; justify-content: end;">
-                            <span class="dashicons dashicons-trash" style="cursor: pointer" @click="tabs -= 1; entries.splice(selected_tab, 1); selected_tab -= 1;"></span>
+                            <span class="dashicons dashicons-trash" style="cursor: pointer" @click="tabs -= 1; selected_tab -= 1;"></span>
                         </div>
                     </div>
                 </template>
@@ -59,10 +60,25 @@ class RepeatableField
     public function save($product_id, $parent='')
     {
         $key = $parent . '_' . $this->slug;
-        foreach ($this->fields as $field) {
-            $field->save($product_id, $key);
-        }
-        update_post_meta($product_id, $key, count($this->fields));
+        if (isset($_POST[$key])) { // phpcs:ignore
+            $num_entries = intval($_POST[$key]);
+            $num_entries_old = (int) get_post_meta($product_id, $key, true);
+			update_post_meta($product_id, $key, $num_entries); // phpcs:ignore
+            for ($i=0; $i < $num_entries; $i++) { 
+                foreach ($this->fields as $field) {
+                    $field->save($product_id, $key . '_' . $i);
+                }
+            }
+            $entries_to_remove = $num_entries_old - $num_entries;
+            if($entries_to_remove > 0) {
+                for ($i=$num_entries; $i < $num_entries + $entries_to_remove; $i++) { 
+                    foreach ($this->fields as $field) {
+                        $field->delete($product_id, $key . '_' . $i);
+                    }
+                }
+            }
+            
+		}
     }
 
 }

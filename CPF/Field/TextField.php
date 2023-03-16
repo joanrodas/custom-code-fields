@@ -28,13 +28,12 @@ class TextField extends Field
 
 	public function display_complex($parent='')
 	{
-		$key = $parent . '_' . $this->slug;
 		ob_start(); ?>
-		<p class="form-field _<?= $this->type ?>_field ">
-			<label for="<?= $key ?>"><?= $this->name ?></label>
-			<input x-cloak type="text" <?= !empty($this->datalist) ? 'list="' . $key . '_datalist"' : '' ?> class="short" style="" name="<?= $key . '[]' ?>" id="<?= $key ?>" :value="entries[tab] ? entries[tab]['<?= $key ?>'] : '<?= $this->default_value ?>'" placeholder="">
+		<p x-data="{field_name: '<?= $parent ?>_' + tab + '_<?= $this->slug ?>'}" class="form-field _<?= $this->type ?>_field">
+			<label :for="field_name"><?= $this->name ?></label>
+			<input x-cloak type="text" <?= !empty($this->datalist) ? `:list="field_name + '_datalist'"` : '' ?> class="short" style="" :name="field_name" id="field_name" :value="section_fields[field_name] ? section_fields[field_name] : '<?= $this->default_value ?>'" placeholder="">
 			<?php if (!empty($this->datalist)): ?>
-				<datalist id="<?= $key ?>_datalist">
+				<datalist :id="field_name + '_datalist'">
 				<?php foreach( $this->datalist as $option ): ?>
 					<option value="<?= $option ?>">
 				<?php endforeach; ?>

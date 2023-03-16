@@ -36,4 +36,10 @@ class Field
 		}
 	}
 
+    public function delete($product_id, $parent='')
+	{
+        $key = $parent . '_' . $this->slug;
+		delete_post_meta($product_id, $key); // phpcs:ignore
+	}
+
 }
