@@ -30,13 +30,12 @@ class SwitchField extends Field
 	}
 
 	public function display_complex($parent='') {
-		$key = $parent . '_' . $this->slug;
 		ob_start(); ?>
-		<p class="form-field _<?= $this->type ?>_field ">
-			<label for="<?= $key ?>"><?= $this->name ?></label>
+		<p x-data="{field_name: '<?= $parent ?>_' + tab + '_<?= $this->slug ?>'}" class="form-field _<?= $this->type ?>_field ">
+			<label :for="field_name"><?= $this->name ?></label>
 			<span>
 				<label class="switch">
-					<input x-cloak type="checkbox" :checked="entries[tab] ? entries[tab]['<?= $key ?>'] : '<?= $this->default_value ? "true" : "false" ?>'" name="<?= $key . '[]' ?>" id="<?= $key ?>" value="1">
+					<input x-cloak type="checkbox" :checked="section_fields[field_name] ? (section_fields[field_name] == '1' ? true : false) : '<?= $this->default_value ? "true" : "false" ?>'" :name="field_name" :id="field_name" value="1">
 					<span class="slider round"></span>
 				</label>
 			</span>
