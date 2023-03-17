@@ -1,7 +1,7 @@
 {
     "name": "joanrodas/custom-product-fields",
-    "description": "WordPress routes made simple.",
-    "keywords": ["plugin", "wordpress", "routes", "wp", "routing"],
+    "description": "Add custom product fields to WooCommerce products programatically with ease.",
+    "keywords": ["plugin", "wordpress", "fields", "wp", "routing"],
     "homepage": "https://github.com/joanrodas/custom-product-fields",
     "license": "GPL-3.0+",
     "authors": [

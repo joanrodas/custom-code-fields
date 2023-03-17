@@ -17,16 +17,38 @@ Product fields library for WooCommerce developers.
 
 ## Examples
 ```php
+use CPF\Section\Section;
+use CPF\Field\Field;
+use CPF\Field\RepeatableField;
+
 add_action('cpf_register_fields', function () {
-	CPF\Section\Section::create('section_slug', 'Section name', [
-		CPF\Field\Field::create('text', 'text_field', 'Text Field'),
-		CPF\Field\Field::create('textarea', 'textarea_field', 'Textarea Field'),
-		CPF\Field\Field::create('switch', 'switch_field', 'Switch Field'),
-		CPF\Field\Field::create('checkbox', 'checkbox_field', 'Checkbox Field'),
-		CPF\Field\Field::create('number', 'number_field', 'Number Field')->min(3)->max(23.5)->step(0.1),
-		CPF\Field\Field::create('color', 'color_field', 'Color Field'),
-		CPF\Field\Field::create('select', 'select_field', 'Select Field')->set_options('add_select_options'),
-		CPF\Field\Field::create('rich_text', 'rich_text_field', 'Rich Text Field'),
+	Section::create('section_slug', 'Section name', [
+		Field::create('text', 'text_field', 'Text Field')
+			->default_value('default')
+		Field::create('textarea', 'textarea_field', 'Textarea Field'),
+		Field::create('switch', 'switch_field', 'Switch Field'),
+		Field::create('checkbox', 'checkbox_field', 'Checkbox Field'),
+		Field::create('number', 'number_field', 'Number Field')
+			->min(3)
+			->max(23.5)
+			->step(0.1)
+			->set_datalist([1,2,5,10,15]),
+		Field::create('html', 'html_inside', 'Inside html')
+				->html('<b>Bold text</b>'),		
+		Field::create('select', 'select_field', 'Select Field')->set_options('add_select_options'),
+		Field::create('rich_text', 'rich_text_field', 'Rich Text Field'),
+		RepeatableField::create('repeatable_field', 'Repeatable Field', [
+			Field::create('password', 'password_inside', 'Inside password'),
+			Field::create('url', 'url_inside', 'Inside url')
+				->set_datalist(['https://plubo.dev']),
+			Field::create('time', 'time_inside', 'Inside time')
+				->set_datalist(['10:20']),
+			Field::create('date', 'date_inside', 'Inside date')
+				->set_datalist(['2023-02-02', '2023-02-01']),
+			Field::create('color', 'color_field', 'Color Field')
+				->set_datalist(['#ffdede', '#f3d4de']),
+			
+		]),
 	])
 		->if_tab('general')
 		// ->if_product_type(['simple', 'variable'])

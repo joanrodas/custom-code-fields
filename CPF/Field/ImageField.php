@@ -2,35 +2,20 @@
 
 namespace CPF\Field;
 
-class ImageField
+class ImageField extends Field
 {
 
-	public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
+	public function display($parent='')
 	{
-		$this->type = $type;
-		$this->slug = $slug;
-		$this->name = $name;
-		$this->save_individual = $save_individual;
-		add_action('woocommerce_process_product_meta', [$this, 'save']);
-	}
-
-
-	public static function create(string $type, string $slug, string $name)
-	{
-		return (new self($type, $slug, $name));
-	}
-
-	public function display()
-	{
-		$input = '';
-		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		$key = $parent . '_' . $this->slug;
+		$value = get_post_meta(get_the_ID(), $key, true);
         $image = $value ? wp_get_attachment_image_url($value) : '';
         ob_start(); ?>
         <p class="form-field _<?= $this->type ?>_field" x-data="{ image_file: false, image_src: '<?= $image ?>' }">
-            <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="_<?= $this->slug ?>">
-                <input type="file" accept="image/*" style="display: none;" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" @change="image_file = $event.target.files > 0 ? $event.target.files[0] : false; image_src = (image_file ? URL.createObjectURL(image_file) : '')">
-                <input type="hidden" :value="image_src" name="_<?= $this->slug ?>_src">
+            <label for="<?= $key ?>"><?= $this->name ?></label>
+            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="<?= $key ?>">
+                <input type="file" accept="image/*" style="display: none;" name="<?= $key ?>" id="<?= $key ?>" @change="image_file = $event.target.files > 0 ? $event.target.files[0] : false; image_src = (image_file ? URL.createObjectURL(image_file) : '')">
+                <input type="hidden" :value="image_src" name="<?= $key ?>_src">
                 <span x-text="image_src ? '' : 'Choose image'"></span>
                 <span style="display: flex; gap: 1rem; align-items: center;">
                     <template x-cloak x-if="image_src">
@@ -41,22 +26,42 @@ class ImageField
 
             <button type="reset" @click="image_file = false; image_src = ''" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer;">Reset</button>
         </p>
-        <?php $input = ob_get_clean();
-		echo $input;
+        <?php echo ob_get_clean();
+	}
+    
+    public function display_complex($parent='')
+	{
+		$key = $parent . '_' . $this->slug;
+		$value = get_post_meta(get_the_ID(), $key, true);
+        $image = $value ? wp_get_attachment_image_url($value) : '';
+        ob_start(); ?>
+        <p class="form-field _<?= $this->type ?>_field" x-data="{ image_file: false, image_src: '<?= $image ?>' }">
+            <label for="<?= $key ?>"><?= $this->name ?></label>
+            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="<?= $key ?>">
+                <input type="file" accept="image/*" style="display: none;" name="<?= $key ?>" id="<?= $key ?>" @change="image_file = $event.target.files > 0 ? $event.target.files[0] : false; image_src = (image_file ? URL.createObjectURL(image_file) : '')">
+                <input type="hidden" :value="image_src" name="<?= $key ?>_src">
+                <span x-text="image_src ? '' : 'Choose image'"></span>
+                <span style="display: flex; gap: 1rem; align-items: center;">
+                    <template x-cloak x-if="image_src">
+                        <img style="width: 4rem; height: 4rem; object-fit: contain;" :src="image_src" alt="image_file ? image_file.name : ''" />
+                    </template>
+                </span>
+            </label>
+
+            <button type="reset" @click="image_file = false; image_src = ''" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer;">Reset</button>
+        </p>
+        <?php echo ob_get_clean();
 	}
 
-	public function save($product_id)
+	public function save($product_id, $parent=false)
 	{
-		if (!$this->save_individual) return;
-
         if ( ! function_exists( 'wp_handle_upload' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
 
         require_once( ABSPATH . 'wp-admin/includes/image.php' );
 
-		$key = '_' . $this->slug;
-
+		$key = $parent . '_' . $this->slug;
         $src = $_POST[$key . "_src"];
         //TODO: Remove attachment if exists??
         if(!$src) {

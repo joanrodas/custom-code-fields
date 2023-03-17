@@ -2,33 +2,18 @@
 
 namespace CPF\Field;
 
-class FileField
+class FileField extends Field
 {
 
-	public function __construct(string $type, string $slug, string $name, bool $save_individual = true)
+	public function display($parent='')
 	{
-		$this->type = $type;
-		$this->slug = $slug;
-		$this->name = $name;
-		$this->save_individual = $save_individual;
-		add_action('woocommerce_process_product_meta', [$this, 'save']);
-	}
-
-
-	public static function create(string $type, string $slug, string $name)
-	{
-		return (new self($type, $slug, $name));
-	}
-
-	public function display()
-	{
-		$input = '';
-		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+        $key = $parent . '_' . $this->slug;
+		$value = get_post_meta(get_the_ID(), $key, true);
         ob_start(); ?>
         <p class="form-field _<?= $this->type ?>_field" x-data="{ files: null }">
-            <label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="_<?= $this->slug ?>">
-                <input type="file" style="display: none;" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" x-on:change="files = Object.values($event.target.files)">
+            <label for="<?= $key ?>"><?= $this->name ?></label>
+            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="<?= $key ?>">
+                <input type="file" style="display: none;" name="<?= $key ?>" id="<?= $key ?>" x-on:change="files = Object.values($event.target.files)">
                 <?php if(!$value): ?>
                     <span x-text="files ? files.map(file => file.name).join(', ') : 'Choose files'"></span>
                 <?php else: ?>
@@ -37,21 +22,38 @@ class FileField
             </label>
             <button type="reset" @click="files = null" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px;">Reset</button>
         </p>
-        <?php $input = ob_get_clean();
-		echo $input;
+        <?php echo ob_get_clean();
+	}
+    
+    public function display_complex($parent='')
+	{
+        $key = $parent . '_' . $this->slug;
+		$value = get_post_meta(get_the_ID(), $key, true);
+        ob_start(); ?>
+        <p class="form-field _<?= $this->type ?>_field" x-data="{ files: null }">
+            <label for="<?= $key ?>"><?= $this->name ?></label>
+            <label style="width: 50%; box-sizing: border-box; margin: 0; float: none; cursor: pointer; padding: 1rem; border: 2px dashed #2271b1; display: block; border-radius: 4px;" for="<?= $key ?>">
+                <input type="file" style="display: none;" name="<?= $key ?>" id="<?= $key ?>" x-on:change="files = Object.values($event.target.files)">
+                <?php if(!$value): ?>
+                    <span x-text="files ? files.map(file => file.name).join(', ') : 'Choose files'"></span>
+                <?php else: ?>
+                    <span><?= get_the_title($value) ?></span>
+                <?php endif; ?>
+            </label>
+            <button type="reset" @click="files = null" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px;">Reset</button>
+        </p>
+        <?php echo ob_get_clean();
 	}
 
-	public function save($product_id)
+	public function save($product_id, $parent='')
 	{
-		if (!$this->save_individual) return;
-
         if ( ! function_exists( 'wp_handle_upload' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
 
         require_once( ABSPATH . 'wp-admin/includes/image.php' );
 
-		$key = '_' . $this->slug;
+		$key = $parent . '_' . $this->slug;
 		if (isset($_FILES[$key])) { // phpcs:ignore
             $uploadedfile = $_FILES[$key];
             if($uploadedfile['size'] == 0) return false;

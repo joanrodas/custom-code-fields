@@ -2,51 +2,44 @@
 
 namespace CPF\Field;
 
-class DateField
+class DateField extends Field
 {
+	use Traits\Datalist;
 
 	public function __construct(string $type, string $slug, string $name)
 	{
-		$this->type = $type;
-		$this->slug = $slug;
-		$this->name = $name;
+		parent::__construct($type, $slug, $name);
 		$this->default_value = date('Y-m-d');
-		add_action('woocommerce_process_product_meta', [$this, 'save']);
 	}
 
-
-	public static function create(string $type, string $slug, string $name)
+	public function display($parent='')
 	{
-		return (new self($type, $slug, $name));
-	}
-
-	public function display()
-	{
-		$input = '';
-		$value = get_post_meta(get_the_ID(), '_' . $this->slug, true);
+		$key = $parent . '_' . $this->slug;
+		$value = get_post_meta(get_the_ID(), $key, true);
 		if ($value == '') $value = $this->default_value;
-		if ($this->type == 'date') {
-			ob_start(); ?>
-			<p class="form-field _<?= $this->type ?>_field ">
-				<label for="_<?= $this->slug ?>"><?= $this->name ?></label>
-				<input type="date" class="short" style="" name="_<?= $this->slug ?>" id="_<?= $this->slug ?>" value="<?= $value ?>" placeholder="">
-			</p>
-			<?php $input = ob_get_clean();
-		}
-		echo $input;
+		ob_start(); ?>
+		<p class="form-field _<?= $this->type ?>_field ">
+			<label for="<?= $key ?>"><?= $this->name ?></label>
+			<input type="date" class="short" style="" name="<?= $key ?>" id="<?= $key ?>" value="<?= $value ?>" placeholder="">
+		</p>
+		<?php echo ob_get_clean();
 	}
-
-	public function default_value($default_value) {
-		$this->default_value = $default_value;
-
-		return $this;
-	}
-
-	public function save($product_id)
+	
+	public function display_complex($parent='')
 	{
-		$key = '_' . $this->slug;
-		if (isset($_POST[$key])) { // phpcs:ignore
-			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
-		}
+		ob_start(); ?>
+		<p x-data="{field_name: '<?= $parent ?>_' + tab + '_<?= $this->slug ?>'}" class="form-field _<?= $this->type ?>_field">
+			<label :for="field_name"><?= $this->name ?></label>
+			<input x-cloak type="date" <?php if( !empty($this->datalist) ): ?> :list="field_name + '_datalist'" <?php endif; ?> class="short" style="" :name="field_name" :id="field_name" :value="section_fields[field_name] ? section_fields[field_name] : '<?= $this->default_value ?>'" placeholder="">
+			<?php if (!empty($this->datalist)): ?>
+				<datalist :id="field_name + '_datalist'">
+				<?php foreach( $this->datalist as $option ): ?>
+					<option value="<?= $option ?>">
+				<?php endforeach; ?>
+				</datalist>
+			<?php endif; ?>
+		</p>
+		<?php echo ob_get_clean();
 	}
+
 }

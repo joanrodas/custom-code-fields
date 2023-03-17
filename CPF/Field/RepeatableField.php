@@ -4,32 +4,33 @@ namespace CPF\Field;
 
 class RepeatableField
 {
-
     private $slug;
     private $name;
     private $fields;
 
-    public function __construct(string $slug, string $name, $fields, bool $save_individual = true) {
+    public function __construct(string $slug, string $name, $fields) {
         $this->slug = $slug;
         $this->name = $name;
         if (is_callable($fields)) $fields = call_user_func($fields);
         $this->fields = (array) $fields;
-        array_map( function ($field) { $field->save_individual = false; }, $this->fields );
-        $this->save_individual = $save_individual;
-        add_action('woocommerce_process_product_meta', [$this, 'save']);
     }
 
     public static function create(string $slug, string $name, $fields) {
         return (new self($slug, $name, $fields));
     }
 
-    public function display() {
-        $values = get_post_meta(get_the_ID(), '_' . $this->slug, true);
-        $entries = $values ? count($values) : 0;
-        $classes = "repeatable_$this->slug";
+    public function display_complex($parent='') {
+        $this->display($parent);
+    }
+
+    public function display($parent='') {
+        $key = $parent . '_' . $this->slug;
+        $product_id = get_the_ID();
+        $num_entries = get_post_meta($product_id, $key, true);
+        $classes = "repeatable_$this->slug repeatable_$key";
         ob_start() ?>
             <style>.wp-editor-area { color: black !important; }</style>
-            <div x-data='{ tabs: <?= $entries ?>, selected_tab: <?= $entries ? 0 : -1 ?>, entries: <?= $values ? str_replace("'", "’", json_encode($values)) : "[]" ?> }' x-cloak style="margin-right: 9px; margin-bottom: 9px">
+            <div x-data='{ tabs: <?= $num_entries ?>, selected_tab: <?= $num_entries ? 0 : -1 ?> }' x-cloak style="margin-right: 9px; margin-bottom: 9px">
                 <p style="font-size: 16px; font-weight: bold;"><?= $this->name ?></p>
                 <div style="display: flex; padding-left: 9px; padding-right: 9px; flex-wrap: wrap;">
                     <template x-for="tab in [...Array(tabs).keys()]">
@@ -37,13 +38,14 @@ class RepeatableField
                     </template>
                     <div :style="'padding: 10px 15px; margin: 0; font-size: 16px; font-weight: bold; border: 1px gainsboro solid; cursor: pointer;' + (tabs === 0 ? 'border-bottom-color: white;' : 'background-color: ghostwhite;')" @click="selected_tab = tabs; tabs += 1;">+</div>
                 </div>
+                <input type="hidden" :value="tabs" name="<?= $key ?>" id="<?= $key ?>">
                 <template x-for="tab in [...Array(tabs).keys()]">
                     <div :style="selected_tab === tab ? 'margin-left: 9px; padding: 9px; border: 1px gainsboro solid; display: flex; flex-direction: column;' : 'display: none'">
                         <?php foreach ($this->fields as $field): ?>
-                            <?php $field->display_complex(); ?>
+                            <?php $field->display_complex($key); ?>
                         <?php endforeach; ?>
                         <div style="display: flex; justify-content: end;">
-                            <span class="dashicons dashicons-trash" style="cursor: pointer" @click="tabs -= 1; entries.splice(selected_tab, 1); selected_tab -= 1;"></span>
+                            <span class="dashicons dashicons-trash" style="cursor: pointer" @click="tabs -= 1; selected_tab -= 1;"></span>
                         </div>
                     </div>
                 </template>
@@ -55,20 +57,28 @@ class RepeatableField
         <?php echo ob_get_clean();
     }
 
-    public function save($product_id) {
-        $fields = array();
-        foreach ($this->fields as $field) {
-            $fields[$field->slug] = $_POST['_' . $field->slug] ?? array();
-        }
-        $results = array();
-        for ($entry = 0; $entry < max(array_map('count', $fields)); $entry++) {
-            $results[$entry] = array();
-            foreach($fields as $slug => $field) {
-                $results[$entry][$slug] = $field[$entry] ?? '';
+    public function save($product_id, $parent='')
+    {
+        $key = $parent . '_' . $this->slug;
+        if (isset($_POST[$key])) { // phpcs:ignore
+            $num_entries = intval($_POST[$key]);
+            $num_entries_old = (int) get_post_meta($product_id, $key, true);
+			update_post_meta($product_id, $key, $num_entries); // phpcs:ignore
+            for ($i=0; $i < $num_entries; $i++) { 
+                foreach ($this->fields as $field) {
+                    $field->save($product_id, $key . '_' . $i);
+                }
             }
-        }
-        $key = '_' . $this->slug;
-        if(!empty($results)) update_post_meta($product_id, $key, $results);
+            $entries_to_remove = $num_entries_old - $num_entries;
+            if($entries_to_remove > 0) {
+                for ($i=$num_entries; $i < $num_entries + $entries_to_remove; $i++) { 
+                    foreach ($this->fields as $field) {
+                        $field->delete($product_id, $key . '_' . $i);
+                    }
+                }
+            }
+            
+		}
     }
 
 }
