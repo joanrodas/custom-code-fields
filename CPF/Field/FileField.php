@@ -20,7 +20,7 @@ class FileField extends Field
                     <span><?= get_the_title($value) ?></span>
                 <?php endif; ?>
             </label>
-            <button type="reset" @click="files = null" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px;">Reset</button>
+            <button type="button" @click="files = null" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px;">Reset</button>
         </p>
         <?php echo ob_get_clean();
 	}
@@ -40,7 +40,7 @@ class FileField extends Field
                     <span><?= get_the_title($value) ?></span>
                 <?php endif; ?>
             </label>
-            <button type="reset" @click="files = null" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px;">Reset</button>
+            <button type="button" @click="files = null" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px;">Reset</button>
         </p>
         <?php echo ob_get_clean();
 	}
