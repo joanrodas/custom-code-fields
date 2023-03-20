@@ -27,6 +27,7 @@ class RepeatableField
         $key = $parent . '_' . $this->slug;
         $product_id = get_the_ID();
         $num_entries = get_post_meta($product_id, $key, true);
+        if(!$num_entries) $num_entries = 0;
         $classes = "repeatable_$this->slug repeatable_$key";
         ob_start() ?>
             <style>.wp-editor-area { color: black !important; }</style>
