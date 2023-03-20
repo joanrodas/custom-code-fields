@@ -24,7 +24,7 @@ class ImageField extends Field
                 </span>
             </label>
 
-            <button type="reset" @click="image_file = false; image_src = ''" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer;">Reset</button>
+            <button type="button" @click="image_file = false; image_src = ''" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer;">Reset</button>
         </p>
         <?php echo ob_get_clean();
 	}
@@ -48,7 +48,7 @@ class ImageField extends Field
                 </span>
             </label>
 
-            <button type="reset" @click="image_file = false; image_src = ''" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer;">Reset</button>
+            <button type="button" @click="image_file = false; image_src = ''" style="margin: 0.5rem 0 0; background-color: #ccc; border: 2px solid #ccc; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer;">Reset</button>
         </p>
         <?php echo ob_get_clean();
 	}
