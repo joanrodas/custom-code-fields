@@ -57,4 +57,9 @@ add_action('cpf_register_fields', function () {
 		// ->if_product_type(['simple', 'variable'])
 		// ->if_checked('virtual')
 		;
+	
+	CPF\Section\Section::create('other_section_slug', 'Other Section', [
+		CPF\Field\Field::create('text', 'other_text_inside', 'Other text'),
+	])
+		->if_tab('general');
 });

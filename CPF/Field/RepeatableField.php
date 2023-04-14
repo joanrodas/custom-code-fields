@@ -32,7 +32,7 @@ class RepeatableField
         ob_start() ?>
             <style>.wp-editor-area { color: black !important; }</style>
             <div x-data='{ tabs: <?= $num_entries ?>, selected_tab: <?= $num_entries ? 0 : -1 ?> }' x-cloak style="margin-right: 9px; margin-bottom: 9px">
-                <p style="font-size: 16px; font-weight: bold;"><?= $this->name ?></p>
+                <p style="font-size: 14px; font-weight: bold;"><?= $this->name ?></p>
                 <div style="display: flex; padding-left: 9px; padding-right: 9px; flex-wrap: wrap;">
                     <template x-for="tab in [...Array(tabs).keys()]">
                         <div :style="'padding: 10px 15px; margin: 0; font-size: 16px; font-weight: bold; border: 1px gainsboro solid; cursor: pointer;' + (selected_tab === tab ? 'border-bottom-color: white;' : 'background-color: ghostwhite;')" @click="selected_tab = tab;" x-text="tab + 1"></div>

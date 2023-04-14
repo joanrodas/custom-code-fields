@@ -137,10 +137,12 @@ class Section
 		}
 		?>
 		<div class="options_group<?=$classes?>" x-data="initSection(<?= get_the_ID() ?>)">
-		<?php
-		foreach ($this->fields as $field) {
-			$field->display();
-		}
+			<p style="font-size: 16px; font-weight: bold;"><?= $this->name ?></p>
+
+			<?php
+			foreach ($this->fields as $field) {
+				$field->display();
+			}
 		echo '</div>';
 	}
 
