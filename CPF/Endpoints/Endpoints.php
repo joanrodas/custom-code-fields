@@ -21,15 +21,15 @@ class Endpoints
     public function get_section_fields(\WP_REST_Request $request)
     {
         global $wpdb;
-        //$slug = $request->get_param('slug');
         $product_id = $request->get_param('product_id');
-        // $results = $wpdb->get_results(
-        //     $wpdb->prepare("SELECT meta_key, meta_value FROM {$wpdb->prefix}postmeta WHERE meta_key LIKE %s AND post_id = %d", [$slug . '%', $product_id]),
-        //     OBJECT_K
-        // );
+
         $results = get_post_meta($product_id);
+        $fields = array_map(function($field) {
+            return is_array($field) && !empty($field) ? $field[0] : $field;
+        }, $results);
+        
         return [
-            'fields' => $results
+            'fields' => $fields
         ];
     }
 }

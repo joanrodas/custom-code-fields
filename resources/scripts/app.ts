@@ -1,10 +1,16 @@
 import Alpine from 'alpinejs';
 
 window.addEventListener( 'DOMContentLoaded', () => {
+
+    Alpine.magic('parent', (el, { Alpine }) => {
+        return Alpine.mergeProxies(
+            Alpine.closestDataStack(el).slice(1)
+        )
+    })
+
     Alpine.data( 'initSection', ( product_id ) => ( {
         init()
         {
-
             fetch( CPF_PARAMS.api_url + '/getFields/' + product_id,
               {
                   // eslint-disable-line
@@ -23,6 +29,7 @@ window.addEventListener( 'DOMContentLoaded', () => {
             } );
 
         },
+        field_name: '',
         section_fields: []
     } ) );
 

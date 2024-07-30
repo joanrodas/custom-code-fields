@@ -31,7 +31,7 @@ class SwitchField extends Field
 
 	public function display_complex($parent='') {
 		ob_start(); ?>
-		<p x-data="{field_name: '<?= $parent ?>_' + tab + '_<?= $this->slug ?>'}" class="form-field _<?= $this->type ?>_field ">
+		<p x-data="{field_name: field_name + '_<?= $this->slug ?>'}" class="form-field _<?= $this->type ?>_field">
 			<label :for="field_name"><?= $this->name ?></label>
 			<span>
 				<label class="switch">
