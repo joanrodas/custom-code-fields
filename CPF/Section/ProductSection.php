@@ -22,6 +22,21 @@ class ProductSection extends Section
 
 		add_action('woocommerce_product_options_general_product_data', [$this, 'display_default']);
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
+
+		add_action('admin_enqueue_scripts', function ($hook) {
+			global $typenow;
+
+			if ($typenow === 'product' && ($hook === 'post-new.php' || $hook === 'post.php')) {
+				wp_enqueue_style('custom-product-fields/app.css', plugin_dir_url(__DIR__) . 'dist/app.css', false, __NAMESPACE__ . '\VERSION');
+				wp_enqueue_script('custom-product-fields/app.js', plugin_dir_url(__DIR__) . 'dist/app.js', [], __NAMESPACE__ . '\VERSION', true);
+				wp_localize_script('custom-product-fields/app.js', 'CPF_PARAMS', array(
+					'ajaxurl'   => admin_url('admin-ajax.php'),
+					'api_url'   => get_rest_url(null, 'custom-product-fields/v1'),
+					'nonce'     => wp_create_nonce('ajax-nonce'),
+					'restNonce'	=> wp_create_nonce('wp_rest')
+				));
+			};
+		}, 0);
 	}
 
 	public function if_tab(string $tab)
