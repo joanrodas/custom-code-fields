@@ -11,42 +11,36 @@ class MultiSelectField extends Field
 	{
 		parent::__construct($type, $slug, $name);
 		$this->options = apply_filters('cpf_multiselect_' . $slug . '_options', []);
-		$this->default_value = 0;
+		$this->default_value = [];
 	}
 
-	public function display($parent='')
+	public function display()
 	{
-		$key = $parent . '_' . $this->slug;
-		$value = get_post_meta(get_the_ID(), $key, true);
-		if ($value == '') $value = $this->default_value;
-
-		$value = (array) $value;
-
 		ob_start(); ?>
-		<p class="form-field _<?= $this->type ?>_field ">
-			<label for="<?= $key ?>[]"><?= $this->name ?></label>
-			<select multiple class="short" style="" name="<?= $key ?>[]" id="<?= $key ?>">
-				<?php foreach ($this->options as $option_key => $option_value) : ?>
-					<option value="<?= $option_key ?>" <?= in_array($option_key, $value) ? 'selected' : '' ?>><?= $option_value ?></option>
+		<p x-data="{ 
+                field_name: field_name + '_<?= $this->slug ?>', 
+                field_value: section_fields[field_name] !== undefined ? section_fields[field_name] : <?= json_encode($this->default_value) ?>
+            }"
+			class="form-field _<?= $this->type ?>_field">
+			<label :for="field_name"><?= $this->name ?></label>
+			<select x-cloak
+				multiple
+				class="short"
+				:name="field_name + '[]'"
+				:id="field_name"
+				x-model="field_value">
+				<?php foreach ($this->options as $option_key => $option_value): ?>
+					<option :value="'<?= $option_key ?>'"
+						:selected="field_value.includes('<?= $option_key ?>')">
+						<?= $option_value ?>
+					</option>
 				<?php endforeach; ?>
 			</select>
 		</p>
-		<?php echo ob_get_clean();
+<?php echo ob_get_clean();
 	}
 
-	public function display_complex($parent='') {
-		$key = $parent . '_' . $this->slug;
-		ob_start(); ?>
-		<p class="form-field _<?= $this->type ?>_field ">
-			<label for="<?= $key ?>[]"><?= $this->name ?></label>
-			<select x-cloak class="short" style="" name="_<?= $key . '[]' ?>" id="<?= $key ?>">
-				<?php foreach ($this->options as $option_key => $option_value) : ?>
-					<option value="<?= $option_key ?>" :selected="entries[tab] ? (entries[tab]['<?= $key ?>'] === '<?= $option_key ?>') : '<?= $this->default_value ?>' === '<?= $option_key ?>'"><?= $option_value ?></option>
-				<?php endforeach; ?>
-			</select>
-		</p>
-		<?php echo ob_get_clean();
-	}
+
 
 	public function set_options($options)
 	{
@@ -60,10 +54,16 @@ class MultiSelectField extends Field
 	public function add_options($options)
 	{
 		if (is_callable($options)) {
-			$options = (array) call_user_func($options);
+			$options = call_user_func($options);
 		}
-		$this->options = array_merge($this->options, $options);
+		$this->options = array_merge($this->options, (array) $options);
 		return $this;
 	}
 
+	public function save($product_id, $parent = '')
+	{
+		$key = $parent . '_' . $this->slug;
+		$value = isset($_POST[$key]) ? (array) $_POST[$key] : [];
+		update_post_meta($product_id, $key, $value);
+	}
 }

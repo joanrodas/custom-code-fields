@@ -6,42 +6,45 @@ class RichTextField extends Field
 {
     private $rows = 4;
 
-    public function display($parent='')
+    public function display()
     {
-        $key = $parent . '_' . $this->slug;
-        $value = get_post_meta(get_the_ID(), $key, true);
-        if ($value == '') $value = $this->default_value;
-        ob_start(); ?>
-        <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
-            <label for="<?= $key ?>"><?= $this->name ?></label>
-            <?php
-            $args = array(
-                'media_buttons' => true, // This setting removes the media button.
-                'textarea_name' => $key, // Set custom name.
-                'textarea_rows' => $this->rows, //Determine the number of rows.
-                'quicktags' => false, // Remove view as HTML button.
-            );
-            wp_editor($value, $key, $args); ?>
-        </div>
-        <?php echo ob_get_clean();
-    }
+        // Generate a unique ID for the editor to avoid conflicts
+        $editor_id = 'editor_' . $this->slug;
 
-    public function display_complex($parent='')
-    {
-        $key = $parent . '_' . $this->slug;
         ob_start(); ?>
-        <div class="form-field _<?= $this->type ?>_field " style="padding: 5px 20px 5px 162px !important; margin: 9px 0;">
-            <label for="<?= $key ?>"><?= $this->name ?></label>
-            <?php
-            $args = array(
-                'media_buttons' => true,
-                'textarea_name' => $key . '[]',
-                'textarea_rows' => $this->rows,
-                'quicktags' => false,
-            );
-            wp_editor($value, $key, $args); // TODO: NO FUNCIONA AL COMPLEX; JA QUE NO ES POT AFEGIR ALPINE ?>
+        <div x-data="{ 
+                field_name: field_name + '_<?= $this->slug ?>', 
+                field_value: section_fields[field_name] !== undefined ? section_fields[field_name] : '<?= esc_js($this->default_value) ?>' 
+            }"
+            class="form-field _<?= $this->type ?>_field">
+            <label :for="field_name"><?= $this->name ?></label>
+            <div :id="'<?= $editor_id ?>'" x-init="
+                wp.editor.initialize('<?= $editor_id ?>', {
+                    tinymce: {
+                        wpautop: true,
+                        plugins: 'lists,link,wordpress,wpautoresize,wpeditimage',
+                        toolbar1: 'formatselect,bold,italic,underline,bullist,numlist,link,unlink,wp_adv',
+                        toolbar2: 'alignleft,aligncenter,alignright,alignjustify,forecolor,wp_help'
+                    },
+                    quicktags: true,
+                    mediaButtons: true
+                });
+            ">
+                <?php
+                wp_editor(
+                    $this->default_value,
+                    $editor_id,
+                    [
+                        'textarea_name' => $this->slug,
+                        'textarea_rows' => $this->rows,
+                        'teeny' => false,
+                        'media_buttons' => true,
+                    ]
+                );
+                ?>
+            </div>
         </div>
-        <?php echo ob_get_clean();
+<?php echo ob_get_clean();
     }
 
     public function rows($rows)
@@ -50,4 +53,10 @@ class RichTextField extends Field
         return $this;
     }
 
+    public function save($product_id, $parent = '')
+    {
+        $key = $parent . '_' . $this->slug;
+        $value = isset($_POST[$key]) ? wp_kses_post($_POST[$key]) : '';
+        update_post_meta($product_id, $key, $value);
+    }
 }

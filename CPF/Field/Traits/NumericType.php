@@ -1,12 +1,14 @@
 <?php
+
 namespace CPF\Field\Traits;
 
-trait NumericType {
-    private $step;
+trait NumericType
+{
+	private $step;
 	private $max;
 	private $min;
 
-    public function min($min)
+	public function min($min)
 	{
 		$this->min = floatval($min);
 		return $this;

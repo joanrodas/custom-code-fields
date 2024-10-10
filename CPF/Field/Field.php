@@ -32,7 +32,7 @@ class Field
 	{
         $key = $parent . '_' . $this->slug;
 		if (isset($_POST[$key])) { // phpcs:ignore
-			update_post_meta($product_id, $key, $_POST[$key]); // phpcs:ignore
+			update_post_meta($product_id, $key, sanitize_text_field($_POST[$key])); // phpcs:ignore
 		}
 	}
 

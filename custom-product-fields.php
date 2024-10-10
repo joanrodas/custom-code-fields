@@ -24,37 +24,60 @@ add_action('after_setup_theme', function () {
 });
 
 add_action('cpf_register_fields', function () {
-	CPF\Section\Section::create('section_slug', 'SECTION name', [
-		//CPF\Field\Field::create('textarea', 'textarea_field', 'Textarea Field'),
-		// CPF\Field\Field::create('switch', 'switch_field', 'Switch Field'),
-		// CPF\Field\Field::create('file', 'file_field', 'File Field'),
-		// CPF\Field\Field::create('image', 'image_field', 'Image Field'),
-		CPF\Field\RepeatableField::create('repeatable_field', 'Repeatable Field', [
-			CPF\Field\Field::create('text', 'text_inside', 'Inside text'),
-			CPF\Field\Field::create('checkbox', 'checkbox_inside', 'Inside checkbox'),
-			CPF\Field\Field::create('switch', 'switch_inside', 'Inside switch'),
-			CPF\Field\Field::create('password', 'password_inside', 'Inside password'),
-			CPF\Field\Field::create('url', 'url_inside', 'Inside url')
-				->set_datalist(['https://plubo.dev']),
-			CPF\Field\Field::create('time', 'time_inside', 'Inside time')
-				->set_datalist(['10:20']),
-			CPF\Field\Field::create('date', 'date_inside', 'Inside date')
-				->set_datalist(['2023-02-02']),
-			CPF\Field\Field::create('color', 'color_inside', 'Inside color')
-				->set_datalist(['#ffdede', '#f3d4de']),
-			//CPF\Field\Field::create('date_time', 'datetime_inside', 'Inside datetime'),
-			CPF\Field\Field::create('html', 'html_inside', 'Inside html')
-				->html('<b>BOLD</b>'),
-			CPF\Field\Field::create('number', 'number_field', 'Number Field')
-				->min(3)
-				->max(23.5)
-				->step(0.1)
-				//->default_value(5)
-				->set_datalist([3]),
-		]),
-	])
-		->if_tab('general')
-		// ->if_product_type(['simple', 'variable'])
-		// ->if_checked('virtual')
-		;
+
+	// CPF\Section\ProductSection::create('dtf_section', 'Opciones DTF', [
+	// 	CPF\Field\Field::create('number', 'altura', 'Altura (mm)')->default_value('550'),
+	// 	CPF\Field\Field::create('number', 'amplada', 'Amplada (mm)')->default_value('1000'),
+	// 	CPF\Field\Field::create('color', 'color', 'Color principal')->default_value('#009d45'),
+	// 	CPF\Field\Field::create('select', 'dtf_type', 'Tipus')->default_value('normal')
+	// 		->set_options([
+	// 			'normal' => 'Sense tall',
+	// 			'dxf' => 'Amb tall (DXF)'
+	// 		]),
+	// 	CPF\Field\Field::create('number', 'base_price', 'Preu base')->default_value(0),
+	// 	CPF\Field\RepeatableField::create('dtf_prices', 'Preus', [
+	// 		CPF\Field\Field::create('number', 'from', 'Metres (des de)')->step('0.01'),
+	// 		CPF\Field\Field::create('number', 'price', 'Preu per metre')->step('0.01')
+	// 	]),
+	// 	CPF\Field\RepeatableField::create('dxf_prices', 'Preus tall', [
+	// 		CPF\Field\Field::create('number', 'from_h', 'H (mm)')->step('0.01'),
+	// 		CPF\Field\Field::create('number', 'from_w', 'W (mm)')->step('0.01'),
+	// 		CPF\Field\RepeatableField::create('dxf_quantities', 'Quantitats', [
+	// 			CPF\Field\Field::create('number', 'quantity', 'Quantitat')->step('1'),
+	// 			CPF\Field\Field::create('number', 'price', 'Preu per metre')->step('0.01')
+	// 		])
+	// 	])
+	// ])
+	// 	->if_tab('general');
+
+		CPF\Section\PostSection::create('dtf_section', 'Opciones DTF', [
+			CPF\Field\Field::create('text', 'altura', 'Altura (mm)')->default_value('550'),
+			CPF\Field\Field::create('password', 'amplada', 'Amplada (mm)')->default_value('1000'),
+			CPF\Field\Field::create('color', 'color', 'Color principal')->default_value('#009d45'),
+			CPF\Field\Field::create('select', 'dtf_type', 'Tipus')->default_value('normal')
+				->set_options([
+					'normal' => 'Sense tall',
+					'dxf' => 'Amb tall (DXF)'
+				]),
+			CPF\Field\Field::create('number', 'base_price', 'Preu base')->default_value(0),
+			CPF\Field\RepeatableField::create('dtf_prices', 'Preus', [
+				CPF\Field\Field::create('number', 'from', 'Metres (des de)')->step('0.01'),
+				CPF\Field\Field::create('number', 'price', 'Preu per metre')->step('0.01')
+			]),
+			CPF\Field\RepeatableField::create('dxf_prices', 'Preus tall', [
+				CPF\Field\Field::create('number', 'from_h', 'H (mm)')->step('0.01'),
+				CPF\Field\Field::create('number', 'from_w', 'W (mm)')->step('0.01'),
+				CPF\Field\RepeatableField::create('dxf_quantities', 'Quantitats', [
+					CPF\Field\Field::create('text', 'quantity', 'Quantitat'),
+					CPF\Field\Field::create('password', 'price', 'Preu per metre')
+				])
+			])
+		])
+			->if_post_type('page')
+			;
+
+
+
+
+
 });
