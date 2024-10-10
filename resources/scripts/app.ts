@@ -8,10 +8,10 @@ window.addEventListener( 'DOMContentLoaded', () => {
         )
     })
 
-    Alpine.data( 'initSection', ( product_id ) => ( {
+    Alpine.data( 'initSection', ( product_id: number ) => ( {
         init()
         {
-            fetch( CPF_PARAMS.api_url + '/getFields/' + product_id,
+            fetch( CCF_PARAMS.api_url + '/getFields/' + product_id,
               {
                   // eslint-disable-line
                   method: 'GET',
@@ -20,7 +20,7 @@ window.addEventListener( 'DOMContentLoaded', () => {
                   redirect: 'follow',
                   referrerPolicy: 'no-referrer',
                   headers: {
-                      'X-WP-Nonce': CPF_PARAMS.restNonce, // eslint-disable-line
+                      'X-WP-Nonce': CCF_PARAMS.restNonce, // eslint-disable-line
                   }
               }
             ).then(response => response.json())

@@ -1,5 +1,5 @@
 <?php
-namespace CPF\Tabs;
+namespace CCF\Tabs;
 
 class Tabs
 {

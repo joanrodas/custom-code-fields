@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Field;
+namespace CCF\Field;
 
 class AssociationField extends Field
 {

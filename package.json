@@ -1,15 +1,15 @@
 {
-	"name": "@joanrodas/custom-product-fields",
+	"name": "@joanrodas/custom-code-fields",
 	"version": "1.0.0",
 	"author": "Joan Rodas <joan@sirvelia.com>",
-	"homepage": "https://plubo.dev",
+	"homepage": "https://sirvelia.com",
 	"private": true,
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/joanrodas/custom-product-fields.git"
+		"url": "git://github.com/joanrodas/custom-code-fields.git"
 	},
 	"bugs": {
-		"url": "https://github.com/joanrodas/custom-product-fields/issues"
+		"url": "https://github.com/joanrodas/custom-code-fields/issues"
 	},
 	"licenses": [
 		{
@@ -18,27 +18,27 @@
 		}
 	],
 	"engines": {
-		"node": ">=16.0.0"
+		"node": ">=20.0.0"
 	},
 	"scripts": {
 		"build": "wp-scripts build",
 		"start": "wp-scripts start",
 		"translate": "yarn translate:pot && yarn translate:update",
-		"translate:pot": "wp i18n make-pot . ./languages/plugin-placeholder.pot --ignore-domain --include=\"react,resources\"",
+		"translate:pot": "wp i18n make-pot . ./languages/custom-code-fields.pot --ignore-domain --include=\"resources\"",
 		"translate:js": "wp i18n make-json ./languages --pretty-print"
 	},
 	"devDependencies": {
 		"@wordpress/scripts": "latest",
 		"css-loader": "7.1.2",
-		"mini-css-extract-plugin": "2.9.0",
-		"postcss": "8.4.40",
+		"mini-css-extract-plugin": "2.9.1",
+		"postcss": "8.4.47",
 		"postcss-loader": "8.1.1",
-		"postcss-preset-env": "9.6.0",
-		"sass": "1.77.8",
-		"sass-loader": "16.0.0",
+		"postcss-preset-env": "10.0.7",
+		"sass": "1.79.4",
+		"sass-loader": "16.0.2",
 		"ts-loader": "latest",
 		"typescript": "latest",
-		"webpack": "^5.93.0",
+		"webpack": "^5.95.0",
 		"webpack-cli": "^5.1.4"
 	},
 	"dependencies": {

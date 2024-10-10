@@ -1,8 +1,8 @@
 {
-    "name": "joanrodas/custom-product-fields",
-    "description": "Add custom product fields to WooCommerce products programatically with ease.",
-    "keywords": ["plugin", "wordpress", "fields", "wp", "routing"],
-    "homepage": "https://github.com/joanrodas/custom-product-fields",
+    "name": "joanrodas/custom-code-fields",
+    "description": "Add custom fields to WooCommerce products, CPT, terms, users and more, programatically and with ease.",
+    "keywords": ["code-field", "custom-field", "fields", "wp", "products"],
+    "homepage": "https://github.com/joanrodas/custom-code-fields",
     "license": "GPL-3.0+",
     "authors": [
       {
@@ -14,7 +14,7 @@
     ],
     "autoload": {
       "psr-4": {
-        "CPF\\": "CPF/"
+        "CCF\\": "CCF/"
       }
     },
     "require": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Field;
+namespace CCF\Field;
 
 class RangeField extends Field
 {
@@ -46,10 +46,10 @@ class RangeField extends Field
 <?php echo ob_get_clean();
 	}
 
-	public function save($product_id, $parent = '')
+	public function save($object_id, $context = 'post', $parent = '')
 	{
 		$key = $parent . '_' . $this->slug;
 		$value = isset($_POST[$key]) ? floatval($_POST[$key]) : $this->default_value;
-		update_post_meta($product_id, $key, $value);
+		update_post_meta($object_id, $key, $value);
 	}
 }

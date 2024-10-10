@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Section;
+namespace CCF\Section;
 
 class ProductSection extends Section
 {
@@ -19,6 +19,7 @@ class ProductSection extends Section
 		$this->checked = [];
 		$this->not_checked = [];
 		$this->ids = [];
+		$this->section_type = 'product';
 
 		add_action('woocommerce_product_options_general_product_data', [$this, 'display_default']);
 		add_action('woocommerce_process_product_meta', [$this, 'save']);
@@ -27,11 +28,11 @@ class ProductSection extends Section
 			global $typenow;
 
 			if ($typenow === 'product' && ($hook === 'post-new.php' || $hook === 'post.php')) {
-				wp_enqueue_style('custom-product-fields/app.css', plugin_dir_url(__DIR__) . 'dist/app.css', false, __NAMESPACE__ . '\VERSION');
-				wp_enqueue_script('custom-product-fields/app.js', plugin_dir_url(__DIR__) . 'dist/app.js', [], __NAMESPACE__ . '\VERSION', true);
-				wp_localize_script('custom-product-fields/app.js', 'CPF_PARAMS', array(
+				wp_enqueue_style('custom-code-fields/app.css', plugin_dir_url(__DIR__) . 'dist/app.css', false, __NAMESPACE__ . '\VERSION');
+				wp_enqueue_script('custom-code-fields/app.js', plugin_dir_url(__DIR__) . 'dist/app.js', [], __NAMESPACE__ . '\VERSION', true);
+				wp_localize_script('custom-code-fields/app.js', 'CCF_PARAMS', array(
 					'ajaxurl'   => admin_url('admin-ajax.php'),
-					'api_url'   => get_rest_url(null, 'custom-product-fields/v1'),
+					'api_url'   => get_rest_url(null, 'custom-code-fields/v1'),
 					'nonce'     => wp_create_nonce('ajax-nonce'),
 					'restNonce'	=> wp_create_nonce('wp_rest')
 				));
@@ -109,6 +110,20 @@ class ProductSection extends Section
 		if ($this->tab === 'general') {
 			$this->display();
 		}
+	}
+
+	public function display()
+	{
+		if(!$this->has_permission()) return;
+
+		$classes = $this->get_classes(); ?>
+
+		<div class="options_group<?=$classes?>" x-data="initSection(<?= get_the_ID() ?>, <?= $this->section_type ?>)">
+		<?php
+		foreach ($this->fields as $field) {
+			$field->display();
+		}
+		echo '</div>';
 	}
 
 }

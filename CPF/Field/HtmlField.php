@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Field;
+namespace CCF\Field;
 
 class HtmlField extends Field
 {
@@ -18,7 +18,7 @@ class HtmlField extends Field
 		return $this;
 	}
 
-	public function save($product_id, $parent = '')
+	public function save($object_id, $context = 'post', $parent = '')
 	{
 		return;
 	}

@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Section;
+namespace CCF\Section;
 
 class Section
 {
@@ -10,6 +10,7 @@ class Section
 	protected $roles;
 	protected $capabilities;
 	protected $callable_conditional;
+	protected $section_type;
 
 	public function __construct(string $slug, string $name, array $fields)
 	{
@@ -19,6 +20,7 @@ class Section
 		$this->roles = [];
 		$this->capabilities = [];
 		$this->callable_conditional = false;
+		$this->section_type = 'product';
 	}
 
 	public static function create(string $slug, string $name, array $fields)
@@ -78,24 +80,24 @@ class Section
 		return '';
 	}
 
+	public function save($object_id)
+	{
+		foreach ($this->fields as $field) {
+			$field->save($object_id);
+		}
+	}
+
 	public function display()
 	{
 		if(!$this->has_permission()) return;
 
 		$classes = $this->get_classes(); ?>
 
-		<div class="options_group<?=$classes?>" x-data="initSection(<?= get_the_ID() ?>)">
+		<div class="options_group<?=$classes?>" x-data="initSection(<?= get_the_ID() ?>, <?= $this->section_type ?>)">
 		<?php
 		foreach ($this->fields as $field) {
 			$field->display();
 		}
 		echo '</div>';
-	}
-
-	public function save($post_id)
-	{
-		foreach ($this->fields as $field) {
-			$field->save($post_id);
-		}
 	}
 }

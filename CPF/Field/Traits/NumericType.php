@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Field\Traits;
+namespace CCF\Field\Traits;
 
 trait NumericType
 {

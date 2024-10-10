@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Section;
+namespace CCF\Section;
 
 class PostSection extends Section
 {
@@ -13,6 +13,7 @@ class PostSection extends Section
 
 		$this->post_type = ['post'];
 		$this->ids = [];
+		$this->section_type = 'post';
 		
 		add_action("save_post_post", [$this, 'save'], 20, 2 );
 		add_action('add_meta_boxes', [$this, 'register_post_metabox']);
@@ -33,13 +34,12 @@ class PostSection extends Section
 			global $typenow;
 
 			if (in_array($typenow, $this->post_type)) {
-			// if ($typenow === 'product' && ($hook === 'post-new.php' || $hook === 'post.php')) {
-				wp_enqueue_style('custom-product-fields/app.css', plugin_dir_url(__DIR__) . '../dist/app.css', false, __NAMESPACE__ . '\VERSION');
-				wp_enqueue_script('custom-product-fields/app.js', plugin_dir_url(__DIR__) . '../dist/app.js', [], __NAMESPACE__ . '\VERSION', true);
+				wp_enqueue_style('custom-code-fields/app.css', plugin_dir_url(__DIR__) . '../dist/app.css', false, __NAMESPACE__ . '\VERSION');
+				wp_enqueue_script('custom-code-fields/app.js', plugin_dir_url(__DIR__) . '../dist/app.js', [], __NAMESPACE__ . '\VERSION', true);
 
-				wp_localize_script('custom-product-fields/app.js', 'CPF_PARAMS', array(
+				wp_localize_script('custom-code-fields/app.js', 'CCF_PARAMS', array(
 					'ajaxurl'   => admin_url('admin-ajax.php'),
-					'api_url'   => get_rest_url(null, 'custom-product-fields/v1'),
+					'api_url'   => get_rest_url(null, 'custom-code-fields/v1'),
 					'nonce'     => wp_create_nonce('ajax-nonce'),
 					'restNonce'	=> wp_create_nonce('wp_rest')
 				));

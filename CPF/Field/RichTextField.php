@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Field;
+namespace CCF\Field;
 
 class RichTextField extends Field
 {
@@ -53,10 +53,10 @@ class RichTextField extends Field
         return $this;
     }
 
-    public function save($product_id, $parent = '')
+    public function save($object_id, $context = 'post', $parent = '')
     {
         $key = $parent . '_' . $this->slug;
         $value = isset($_POST[$key]) ? wp_kses_post($_POST[$key]) : '';
-        update_post_meta($product_id, $key, $value);
+        update_post_meta($object_id, $key, $value);
     }
 }

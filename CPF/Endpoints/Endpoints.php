@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Endpoints;
+namespace CCF\Endpoints;
 
 class Endpoints
 {
@@ -11,7 +11,7 @@ class Endpoints
 
     public function register_endpoints()
     {
-        register_rest_route('custom-product-fields/v1', '/getFields/(?P<product_id>\d+)', array(
+        register_rest_route('custom-code-fields/v1', '/getFields/(?P<product_id>\d+)', array(
             'methods' => 'GET',
             'callback' => [$this, 'get_section_fields'],
             'permission_callback' => '__return_true' //TODO: Permission

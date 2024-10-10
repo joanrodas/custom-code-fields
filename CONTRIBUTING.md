@@ -1,4 +1,4 @@
-# Contributing to Plubo Routes
+# Contributing to Custom Code Fields
 Contributions to this projects are more than welcome, whether it's:
 
 - Reporting a bug 🐛
@@ -19,8 +19,8 @@ To make a pull request:
 4. Issue a pull request
 5. Update the documentation if necessary.
 
-## Report bugs using Github's [issues](https://github.com/joanrodas/plubo-routes/issues)
-GitHub issues are great to track public bugs. Report a bug by [opening a new issue](https://github.com/joanrodas/plubo-routes/issues/new/choose); it's that easy!
+## Report bugs using Github's [issues](https://github.com/joanrodas/custom-code-fields/issues)
+GitHub issues are great to track public bugs. Report a bug by [opening a new issue](https://github.com/joanrodas/custom-code-fields/issues/new/choose); it's that easy!
 
 ## Write bug reports with detail, background, and sample code
 

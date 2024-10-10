@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Field;
+namespace CCF\Field;
 
 class SelectField extends Field
 {
@@ -9,7 +9,7 @@ class SelectField extends Field
 	public function __construct(string $type, string $slug, string $name)
 	{
 		parent::__construct($type, $slug, $name);
-		$this->options = apply_filters('cpf_select_' . $slug . '_options', []);
+		$this->options = apply_filters('ccf_select_' . $slug . '_options', []);
 		$this->default_value = 0;
 	}
 

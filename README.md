@@ -1,4 +1,4 @@
-[![GitHub stars](https://img.shields.io/github/stars/joanrodas/custom-product-fields?style=for-the-badge)](https://github.com/joanrodas/custom-product-fields/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/joanrodas/custom-code-fields?style=for-the-badge)](https://github.com/joanrodas/custom-code-fields/stargazers)
 
 Product fields library for WooCommerce developers.
 
@@ -9,7 +9,7 @@ Product fields library for WooCommerce developers.
 
 ## Getting started
 
-`composer require joanrodas/custom-product-fields`
+`composer require joanrodas/custom-code-fields`
 
 > You can also install Custom Product Fields as a standalone WordPress plugin, simply downloading the zip and placing it in the plugins folder.
 
@@ -17,12 +17,12 @@ Product fields library for WooCommerce developers.
 
 ## Examples
 ```php
-use CPF\Section\Section;
-use CPF\Field\Field;
-use CPF\Field\RepeatableField;
+use CCF\Section\ProductSection;
+use CCF\Field\Field;
+use CCF\Field\RepeatableField;
 
-add_action('cpf_register_fields', function () {
-	Section::create('section_slug', 'Section name', [
+add_action('ccf_register_fields', function () {
+	ProductSection::create('section_slug', 'Section name', [
 		Field::create('text', 'text_field', 'Text Field')
 			->default_value('default')
 		Field::create('textarea', 'textarea_field', 'Textarea Field'),
@@ -69,9 +69,9 @@ function add_select_options() {
 <br>
 
 ## Contributions
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=for-the-badge)](https://github.com/joanrodas/custom-product-fields/issues)
-[![GitHub issues](https://img.shields.io/github/issues/joanrodas/custom-product-fields?style=for-the-badge)](https://github.com/joanrodas/custom-product-fields/issues)
-[![GitHub license](https://img.shields.io/github/license/joanrodas/custom-product-fields?style=for-the-badge)](https://github.com/joanrodas/custom-product-fields/blob/main/LICENSE)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=for-the-badge)](https://github.com/joanrodas/custom-code-fields/issues)
+[![GitHub issues](https://img.shields.io/github/issues/joanrodas/custom-code-fields?style=for-the-badge)](https://github.com/joanrodas/custom-code-fields/issues)
+[![GitHub license](https://img.shields.io/github/license/joanrodas/custom-code-fields?style=for-the-badge)](https://github.com/joanrodas/custom-code-fields/blob/main/LICENSE)
 
 
 Feel free to contribute to the project, suggesting improvements, reporting bugs and coding.

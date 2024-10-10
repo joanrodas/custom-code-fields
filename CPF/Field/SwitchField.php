@@ -1,6 +1,6 @@
 <?php
 
-namespace CPF\Field;
+namespace CCF\Field;
 
 class SwitchField extends Field
 {
@@ -31,10 +31,10 @@ class SwitchField extends Field
 <?php echo ob_get_clean();
 	}
 
-	public function save($product_id, $parent = '')
+	public function save($object_id, $context = 'post', $parent = '')
 	{
 		$key = $parent . '_' . $this->slug;
 		$value = isset($_POST[$key]) ? '1' : '0';
-		update_post_meta($product_id, $key, $value);
+		update_post_meta($object_id, $key, $value);
 	}
 }

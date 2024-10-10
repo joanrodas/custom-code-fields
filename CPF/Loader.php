@@ -1,8 +1,8 @@
 <?php
 
-namespace CPF;
+namespace CCF;
 
-use CPF\Endpoints\Endpoints;
+use CCF\Endpoints\Endpoints;
 
 class Loader
 {
@@ -24,7 +24,7 @@ class Loader
 			define(__NAMESPACE__ . '\VERSION', '0.1.0');
 
 		new Endpoints();
-		do_action('cpf_register_fields');
+		do_action('ccf_register_fields');
 
 		add_action('post_edit_form_tag', function () {
 			echo ' enctype="multipart/form-data"';
