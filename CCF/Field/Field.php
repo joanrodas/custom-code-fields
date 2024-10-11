@@ -29,10 +29,13 @@ class Field
         return (new $class($type, $slug, $name));
     }
 
-    public function save($object_id, $context = 'post', $parent = '')
+    public function save($object_id, $context = 'product', $parent = '')
     {
         $key = $parent . '_' . $this->slug;
         $value = isset($_POST[$key]) ? sanitize_text_field($_POST[$key]) : $this->default_value;
+
+        error_log('SAVE');
+        error_log("$context: $object_id - $value");
 
         switch ($context) {
             case 'post':

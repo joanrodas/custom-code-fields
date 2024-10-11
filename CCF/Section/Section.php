@@ -10,7 +10,7 @@ class Section
 	protected $roles;
 	protected $capabilities;
 	protected $callable_conditional;
-	protected $section_type;
+	protected $section_type = 'product';
 
 	public function __construct(string $slug, string $name, array $fields)
 	{
@@ -20,7 +20,6 @@ class Section
 		$this->roles = [];
 		$this->capabilities = [];
 		$this->callable_conditional = false;
-		$this->section_type = 'product';
 	}
 
 	public static function create(string $slug, string $name, array $fields)
@@ -83,7 +82,7 @@ class Section
 	public function save($object_id)
 	{
 		foreach ($this->fields as $field) {
-			$field->save($object_id);
+			$field->save($object_id, $this->section_type);
 		}
 	}
 
@@ -93,7 +92,7 @@ class Section
 
 		$classes = $this->get_classes(); ?>
 
-		<div class="options_group<?=$classes?>" x-data="initSection(<?= get_the_ID() ?>, <?= $this->section_type ?>)">
+		<div class="options_group<?=$classes?>" x-data="initSection(<?= get_the_ID() ?>, '<?= $this->section_type ?>')">
 		<?php
 		foreach ($this->fields as $field) {
 			$field->display();

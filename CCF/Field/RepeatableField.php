@@ -61,23 +61,40 @@ class RepeatableField
 <?php echo ob_get_clean();
     }
 
-    public function save($object_id, $context = 'post', $parent = '')
+    public function save($object_id, $context = 'product', $parent = '')
     {
         $key = $parent . '_' . $this->slug;
         if (isset($_POST[$key])) { // phpcs:ignore
             $num_entries = intval($_POST[$key]);
             $num_entries_old = (int) get_post_meta($object_id, $key, true);
-            update_post_meta($object_id, $key, $num_entries); // phpcs:ignore
+
+            update_post_meta($object_id, $key, $num_entries);
+
+            switch ($context) {
+                case 'post':
+                    update_post_meta($object_id, $key, $num_entries);
+                    break;
+                case 'user':
+                    update_user_meta($object_id, $key, $num_entries);
+                    break;
+                case 'term':
+                    update_term_meta($object_id, $key, $num_entries);
+                    break;
+                default:
+                    do_action('ccf/save_field/repeatable', $object_id, $context, $key, $num_entries);
+                    break;
+            }
+
             for ($i = 0; $i < $num_entries; $i++) {
                 foreach ($this->fields as $field) {
-                    $field->save($object_id, $key . '_' . $i);
+                    $field->save($object_id, $context, $key . '_' . $i);
                 }
             }
             $entries_to_remove = $num_entries_old - $num_entries;
             if ($entries_to_remove > 0) {
                 for ($i = $num_entries; $i < $num_entries + $entries_to_remove; $i++) {
                     foreach ($this->fields as $field) {
-                        $field->delete($object_id, $key . '_' . $i);
+                        $field->delete($object_id, $context, $key . '_' . $i);
                     }
                 }
             }

@@ -1,10 +1,8 @@
 <?php
 
 /**
- * The plugin bootstrap file
- *
  * @wordpress-plugin
- * Plugin Name:       Custom Product Fields
+ * Plugin Name:       Custom Code Fields
  * Plugin URI:        https://sirvelia.com/
  * Description:       WooCommerce fields made simple.
  * Version:           1.0.0
@@ -50,7 +48,7 @@ add_action('ccf_register_fields', function () {
 	// ])
 	// 	->if_tab('general');
 
-		CCF\Section\PostSection::create('dtf_section', 'Opciones DTF', [
+		CCF\Section\UserSection::create('dtf_section', 'Opciones DTF', [
 			CCF\Field\Field::create('text', 'altura', 'Altura (mm)')->default_value('550'),
 			CCF\Field\Field::create('password', 'amplada', 'Amplada (mm)')->default_value('1000'),
 			CCF\Field\Field::create('color', 'color', 'Color principal')->default_value('#009d45'),
@@ -73,7 +71,7 @@ add_action('ccf_register_fields', function () {
 				])
 			])
 		])
-			->if_post_type('page')
+			//->if_post_type('page')
 			;
 
 

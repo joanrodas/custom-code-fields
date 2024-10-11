@@ -29,15 +29,23 @@ class CheckboxField extends Field
 <?php echo ob_get_clean();
 	}
 
-	public function save($object_id, $context = 'post', $parent = '')
+	public function save($object_id, $context = 'product', $parent = '')
 	{
 		$key = $parent . '_' . $this->slug;
 
-		// Check if the checkbox was checked; if so, set the value to '1', otherwise '0'
-		if (isset($_POST[$key])) { // phpcs:ignore
-			update_post_meta($object_id, $key, '1'); // phpcs:ignore
-		} else {
-			update_post_meta($object_id, $key, '0'); // phpcs:ignore
-		}
+		switch ($context) {
+            case 'post':
+				update_post_meta($object_id, $key, isset($_POST[$key]) ? '1' : '0');
+                break;
+            case 'user':
+				update_user_meta($object_id, $key, isset($_POST[$key]) ? '1' : '0');
+                break;
+            case 'term':
+				update_term_meta($object_id, $key, isset($_POST[$key]) ? '1' : '0');
+                break;
+            default:
+                do_action('ccf/save_field/checkbox', $object_id, $context, $key, isset($_POST[$key]) ? '1' : '0');
+                break;
+        }
 	}
 }

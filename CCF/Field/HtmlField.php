@@ -18,7 +18,7 @@ class HtmlField extends Field
 		return $this;
 	}
 
-	public function save($object_id, $context = 'post', $parent = '')
+	public function save($object_id, $context = 'product', $parent = '')
 	{
 		return;
 	}

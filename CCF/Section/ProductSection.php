@@ -112,18 +112,4 @@ class ProductSection extends Section
 		}
 	}
 
-	public function display()
-	{
-		if(!$this->has_permission()) return;
-
-		$classes = $this->get_classes(); ?>
-
-		<div class="options_group<?=$classes?>" x-data="initSection(<?= get_the_ID() ?>, <?= $this->section_type ?>)">
-		<?php
-		foreach ($this->fields as $field) {
-			$field->display();
-		}
-		echo '</div>';
-	}
-
 }

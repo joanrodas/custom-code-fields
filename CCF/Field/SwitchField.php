@@ -34,7 +34,20 @@ class SwitchField extends Field
 	public function save($object_id, $context = 'post', $parent = '')
 	{
 		$key = $parent . '_' . $this->slug;
-		$value = isset($_POST[$key]) ? '1' : '0';
-		update_post_meta($object_id, $key, $value);
+
+		switch ($context) {
+            case 'post':
+				update_post_meta($object_id, $key, isset($_POST[$key]) ? '1' : '0');
+                break;
+            case 'user':
+				update_user_meta($object_id, $key, isset($_POST[$key]) ? '1' : '0');
+                break;
+            case 'term':
+				update_term_meta($object_id, $key, isset($_POST[$key]) ? '1' : '0');
+                break;
+            default:
+                do_action('ccf/save_field/switch', $object_id, $context, $key, isset($_POST[$key]) ? '1' : '0');
+                break;
+        }
 	}
 }

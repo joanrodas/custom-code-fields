@@ -81,11 +81,4 @@ class PostSection extends Section
 		}
 	}
 
-	public function save($post_id)
-	{
-		foreach ($this->fields as $field) {
-			$field->save($post_id);
-		}
-	}
-
 }

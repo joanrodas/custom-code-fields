@@ -62,6 +62,20 @@ class RadioField extends Field
     {
         $key = $parent . '_' . $this->slug;
         $value = isset($_POST[$key]) ? sanitize_text_field($_POST[$key]) : '';
-        update_post_meta($object_id, $key, $value);
+
+        switch ($context) {
+            case 'post':
+				update_post_meta($object_id, $key, $value);
+                break;
+            case 'user':
+				update_user_meta($object_id, $key, $value);
+                break;
+            case 'term':
+				update_term_meta($object_id, $key, $value);
+                break;
+            default:
+                do_action('ccf/save_field/radio', $object_id, $context, $key, $value);
+                break;
+        }
     }
 }

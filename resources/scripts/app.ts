@@ -8,10 +8,10 @@ window.addEventListener( 'DOMContentLoaded', () => {
         )
     })
 
-    Alpine.data( 'initSection', ( product_id: number ) => ( {
+    Alpine.data( 'initSection', ( product_id: number, section_type: string ) => ( {
         init()
         {
-            fetch( CCF_PARAMS.api_url + '/getFields/' + product_id,
+            fetch( CCF_PARAMS.api_url + '/getFields/' + section_type + '/' + product_id,
               {
                   // eslint-disable-line
                   method: 'GET',

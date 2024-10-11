@@ -45,7 +45,7 @@ class FileField extends Field
         <?php echo ob_get_clean();
 	}
 
-	public function save($object_id, $context = 'post', $parent = '')
+	public function save($object_id, $context = 'product', $parent = '')
 	{
         if ( ! function_exists( 'wp_handle_upload' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
