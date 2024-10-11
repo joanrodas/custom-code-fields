@@ -11,25 +11,25 @@ class CodeEditorField extends Field
     public function __construct(string $type, string $slug, string $name, string $language = 'javascript', int $indentUnit = 2, bool $useTabs = false)
     {
         parent::__construct($type, $slug, $name);
-        $this->default_value = ''; // Default to an empty string
+        $this->default_value = '';
         $this->language = $language;
         $this->indentUnit = $indentUnit;
         $this->useTabs = $useTabs;
     }
 
-    public function setLanguage(string $language)
+    public function set_language(string $language)
     {
         $this->language = $language;
         return $this;
     }
 
-    public function setIndentUnit(int $indentUnit)
+    public function set_indent(int $indentUnit)
     {
         $this->indentUnit = $indentUnit;
         return $this;
     }
 
-    public function setUseTabs(bool $useTabs)
+    public function use_tabs(bool $useTabs)
     {
         $this->useTabs = $useTabs;
         return $this;
@@ -49,35 +49,45 @@ class CodeEditorField extends Field
             wp_enqueue_script('code-editor');
         }
 
-        // Generate a unique ID for the CodeMirror editor to avoid conflicts
-        $editor_id = 'editor_' . $this->slug;
-
         ob_start(); ?>
         <div x-data="{ 
-                field_name: field_name + '_<?= $this->slug ?>', 
-                field_value: section_fields[field_name] !== undefined ? section_fields[field_name] : '<?= esc_js($this->default_value) ?>' 
+                field_name: field_name + '_<?php echo $this->slug ?>', 
+                field_value: section_fields[field_name] ? section_fields[field_name] : '<?php echo esc_js($this->default_value) ?>' 
             }"
-            class="form-field _<?= $this->type ?>_field">
-            <label :for="field_name"><?= $this->name ?></label>
+            x-init="
+                $nextTick(() => {
+                const editor = wp.codeEditor.initialize(document.getElementById(field_name), {
+                    codemirror: {
+                        mode: '<?php echo esc_js($this->language) ?>',
+                        lineNumbers: true,
+                        indentUnit: <?php echo esc_js($this->indentUnit) ?>,
+                        indentWithTabs: <?php echo $this->useTabs ? 'true' : 'false' ?>,
+                        tabSize: <?php echo esc_js($this->indentUnit) ?>
+                    }
+                });
+
+                // Watch for changes in section_fields and update editor value if needed
+                $watch('section_fields', (newVal) => {
+                    if (newVal[field_name] !== undefined) {
+                        editor.codemirror.setValue(newVal[field_name]);
+                        field_value = newVal[field_name];
+                    }
+                });
+
+                // Update field_value when the editor content changes
+                editor.codemirror.on('change', () => {
+                    field_value = editor.codemirror.getValue();
+                });
+            })
+            "
+            class="form-field _<?php echo esc_attr($this->type) ?>_field">
+            <label :for="field_name"><?php echo esc_html($this->name) ?></label>
             <textarea x-cloak
-                :id="'<?= $editor_id ?>'"
+                :id="field_name"
                 :name="field_name"
                 class="code-editor short"
                 style="width: 100%; height: 300px;"
-                x-model="field_value"></textarea>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    wp.codeEditor.initialize('<?= $editor_id ?>', {
-                        codemirror: {
-                            mode: '<?= $this->language ?>',
-                            lineNumbers: true,
-                            indentUnit: <?= $this->indentUnit ?>,
-                            indentWithTabs: <?= $this->useTabs ? 'true' : 'false' ?>,
-                            tabSize: <?= $this->indentUnit ?>,
-                        }
-                    });
-                });
-            </script>
+                :value="field_value"></textarea>
         </div>
 <?php echo ob_get_clean();
     }
@@ -87,15 +97,17 @@ class CodeEditorField extends Field
         $key = $parent . '_' . $this->slug;
         $value = isset($_POST[$key]) ? wp_kses_post($_POST[$key]) : '';
 
+        error_log('SAVE:' . $key . ' ' . $value . ' ' . $context . ' ' . $object_id);
+
         switch ($context) {
             case 'post':
-				update_post_meta($object_id, $key, $value);
+                update_post_meta($object_id, $key, $value);
                 break;
             case 'user':
-				update_user_meta($object_id, $key, $value);
+                update_user_meta($object_id, $key, $value);
                 break;
             case 'term':
-				update_term_meta($object_id, $key, $value);
+                update_term_meta($object_id, $key, $value);
                 break;
             default:
                 do_action('ccf/save_field/code_editor', $object_id, $context, $key, $value);

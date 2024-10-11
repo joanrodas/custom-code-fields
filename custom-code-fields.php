@@ -49,7 +49,8 @@ add_action('ccf_register_fields', function () {
 	// 	->if_tab('general');
 
 		CCF\Section\UserSection::create('dtf_section', 'Opciones DTF', [
-			CCF\Field\Field::create('text', 'altura', 'Altura (mm)')->default_value('550'),
+			CCF\Field\Field::create('code_editor', 'altura', 'Altura (mm)')
+				->set_language('php'),
 			CCF\Field\Field::create('password', 'amplada', 'Amplada (mm)')->default_value('1000'),
 			CCF\Field\Field::create('color', 'color', 'Color principal')->default_value('#009d45'),
 			CCF\Field\Field::create('select', 'dtf_type', 'Tipus')->default_value('normal')

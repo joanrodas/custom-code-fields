@@ -25,7 +25,7 @@ class ColorField extends Field
 				class="short"
 				:name="field_name"
 				:id="field_name"
-				:value="section_fields[field_name] ? section_fields[field_name] : '<?= $this->default_value ?>'"
+				:value="section_fields[field_name] ? section_fields[field_name] : '<?php echo $this->default_value ?>'"
 				placeholder="">
 			<?php if (!empty($this->datalist)): ?>
 				<datalist :id="field_name + '_datalist'">
